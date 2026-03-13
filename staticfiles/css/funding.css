@@ -1,0 +1,428 @@
+/* =========================================
+   FUNDING MODULE STYLES
+   ========================================= */
+
+.funding-page {
+    color: #fff;
+}
+
+/* ---------- MAIN SHELL ---------- */
+
+.funding-shell {
+    background: linear-gradient(180deg, #1f1f1f 0%, #121212 55%, #0e0e0e 100%);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.funding-shell-top {
+    background: linear-gradient(135deg, #32105f 0%, #4b0082 45%, #6d28d9 100%);
+    padding: 2rem;
+}
+
+.funding-subtitle {
+    color: rgba(255,255,255,.78);
+    margin-bottom: 0;
+}
+
+/* ---------- CARDS ---------- */
+
+.funding-card {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+}
+
+.funding-soft-box {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 20px;
+    padding: 1.1rem;
+}
+
+/* ---------- TEXT ---------- */
+
+.funding-label {
+    color: rgba(255,255,255,.72);
+    font-size: .95rem;
+}
+
+.funding-value {
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.funding-muted {
+    color: rgba(255,255,255,.68);
+}
+
+/* ---------- ALERTS ---------- */
+
+.funding-alert-info {
+    background: rgba(59,130,246,.14);
+    border: 1px solid rgba(59,130,246,.24);
+    color: #bfdbfe;
+    border-radius: 20px;
+    padding: 1rem 1.2rem;
+}
+
+.funding-alert-warning {
+    background: rgba(255,193,7,.14);
+    border: 1px solid rgba(255,193,7,.25);
+    color: #ffe8a3;
+    border-radius: 20px;
+    padding: 1rem 1.2rem;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.funding-btn-primary {
+    background: linear-gradient(135deg,#7c3aed,#5b21b6);
+    border: 1px solid rgba(255,255,255,.08);
+    color: #fff;
+    border-radius: 999px;
+    padding: .75rem 1.3rem;
+    text-decoration: none;
+    transition: .25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.funding-btn-primary:hover {
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(124,58,237,.28);
+    text-decoration: none;
+}
+
+.funding-btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.18);
+    color: #fff;
+    border-radius: 999px;
+    padding: .75rem 1.3rem;
+    text-decoration: none;
+    transition: .25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.funding-btn-secondary:hover {
+    color: #fff;
+    border-color: rgba(255,255,255,.32);
+    background: rgba(255,255,255,.06);
+    text-decoration: none;
+}
+
+.funding-btn-sm {
+    padding: .55rem 1rem;
+    font-size: .92rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- INPUTS ---------- */
+
+.funding-input,
+.funding-textarea {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    color: #fff;
+    border-radius: 16px;
+    padding: .85rem 1rem;
+}
+
+.funding-input:focus,
+.funding-textarea:focus {
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    border-color: rgba(124,58,237,.7);
+    box-shadow: 0 0 0 .2rem rgba(124,58,237,.18);
+}
+
+.funding-input::placeholder,
+.funding-textarea::placeholder {
+    color: rgba(255,255,255,.45);
+}
+
+/* ---------- BADGES ---------- */
+
+.funding-badge {
+    border-radius: 999px;
+    padding: .35rem .75rem;
+    font-size: .8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.funding-badge-success {
+    background: rgba(29,185,84,.14);
+    color: #86efac;
+    border: 1px solid rgba(29,185,84,.22);
+}
+
+.funding-badge-muted {
+    background: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.8);
+    border: 1px solid rgba(255,255,255,.10);
+}
+
+.funding-badge-primary {
+    background: rgba(124,58,237,.16);
+    color: #d8b4fe;
+    border: 1px solid rgba(124,58,237,.24);
+}
+
+/* ---------- PROGRESS ---------- */
+
+.funding-progress {
+    background: rgba(255,255,255,.09);
+    border-radius: 999px;
+    height: 14px;
+    overflow: hidden;
+}
+
+.funding-progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg,#7c3aed,#8b5cf6,#1db954);
+}
+
+/* ---------- EMPTY STATE ---------- */
+
+.funding-empty-box {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+/* ---------- TABLES CLEAN ---------- */
+
+.funding-table-wrap {
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+table.funding-table-clean {
+    width: 100%;
+    border-collapse: collapse !important;
+    background: transparent !important;
+    color: rgba(255,255,255,.82) !important;
+}
+
+table.funding-table-clean thead,
+table.funding-table-clean tbody,
+table.funding-table-clean tr,
+table.funding-table-clean th,
+table.funding-table-clean td {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+table.funding-table-clean thead th {
+    color: rgba(255,255,255,.88) !important;
+    font-weight: 700;
+    font-size: .95rem;
+    padding: 1rem .75rem;
+    border-bottom: 1px solid rgba(255,255,255,.10) !important;
+    white-space: nowrap;
+}
+
+table.funding-table-clean tbody td {
+    color: rgba(255,255,255,.78) !important;
+    padding: 1rem .75rem;
+    border-bottom: 1px solid rgba(255,255,255,.06) !important;
+    vertical-align: middle;
+}
+
+table.funding-table-clean tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+table.funding-table-clean tbody tr:hover td {
+    background: rgba(255,255,255,.025) !important;
+}
+
+table.funding-table-clean.table,
+table.funding-table-clean.table > :not(caption) > * > * {
+    background-color: transparent !important;
+    --bs-table-bg: transparent !important;
+    --bs-table-accent-bg: transparent !important;
+    --bs-table-striped-bg: transparent !important;
+    --bs-table-active-bg: transparent !important;
+    --bs-table-hover-bg: rgba(255,255,255,.025) !important;
+    color: rgba(255,255,255,.82) !important;
+    border-color: rgba(255,255,255,.08) !important;
+}
+
+.funding-card h3,
+.funding-card h4,
+.funding-card h5 {
+    color: #fff;
+}
+
+/* ---------- HEADER/FORCED VISIBILITY ---------- */
+
+.funding-shell-top h1,
+.funding-shell-top h2,
+.funding-shell-top h3,
+.funding-shell-top h4,
+.funding-shell-top h5,
+.funding-shell-top h6,
+.funding-shell-top p,
+.funding-shell-top a {
+    color: #fff;
+}
+
+.funding-soft-box,
+.funding-soft-box * {
+    color: #fff;
+}
+
+.funding-soft-box .funding-label,
+.funding-soft-box .funding-muted {
+    color: rgba(255,255,255,.72);
+}
+
+/* =========================================
+   TOAST MESSAGES
+   ========================================= */
+
+#toast-container {
+    position: fixed;
+    top: 88px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(380px, calc(100vw - 24px));
+}
+
+.funding-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(20, 20, 24, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: toastIn 0.25s ease;
+}
+
+.funding-toast * {
+    color: inherit;
+    box-sizing: border-box;
+}
+
+.funding-toast-icon {
+    flex: 0 0 auto;
+    font-size: 1.35rem;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.funding-toast-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.funding-toast-title {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.funding-toast-text {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.94rem;
+    line-height: 1.45;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.funding-toast-close {
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1.45rem;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.funding-toast-close:hover {
+    color: #ffffff;
+}
+
+.toast-hide {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.25s ease;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 991px) {
+    .funding-shell-top {
+        padding: 1.4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #toast-container {
+        top: 76px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+    }
+
+    .funding-toast {
+        padding: 14px 16px;
+        border-radius: 16px;
+    }
+
+    .funding-toast-title {
+        font-size: 0.95rem;
+    }
+
+    .funding-toast-text {
+        font-size: 0.9rem;
+    }
+}
