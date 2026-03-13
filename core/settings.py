@@ -29,7 +29,7 @@ DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,app.veryfai.com").split(",")
     if host.strip()
 ]
 
