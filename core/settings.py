@@ -32,7 +32,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "ALLOWED_HOSTS",
-        "127.0.0.1,localhost,app.veryffai.com,.up.railway.app"
+        "127.0.0.1,localhost,app.veryffai.online,.up.railway.app"
     ).split(",")
     if host.strip()
 ]
@@ -42,7 +42,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CSRF_TRUSTED_ORIGINS",
-        "http://127.0.0.1,http://localhost,https://app.veryffai.com,https://*.up.railway.app"
+        "http://127.0.0.1,http://localhost,https://app.veryffai.online,https://*.up.railway.app"
     ).split(",")
     if origin.strip()
 ]
