@@ -3,7 +3,10 @@ from dotenv import load_dotenv
 import os
 import dj_database_url
 
-# Cargar variables .env
+# -------------------------------------------------
+# CARGAR VARIABLES DE ENTORNO
+# -------------------------------------------------
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,19 +23,19 @@ LOGOUT_REDIRECT_URL = '/'
 # SEGURIDAD
 # -------------------------------------------------
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-key-change-this-in-production")
 
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "").split(",")
+    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
     if host.strip()
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
-    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost").split(",")
     if origin.strip()
 ]
 
@@ -59,8 +62,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
-    # WhiteNoise para servir estáticos en Railway
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -72,10 +73,11 @@ MIDDLEWARE = [
 ]
 
 # -------------------------------------------------
-# URLS
+# URLS / WSGI
 # -------------------------------------------------
 
 ROOT_URLCONF = 'core.urls'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 # -------------------------------------------------
 # TEMPLATES
@@ -84,7 +86,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,16 +100,10 @@ TEMPLATES = [
 ]
 
 # -------------------------------------------------
-# WSGI
-# -------------------------------------------------
-
-WSGI_APPLICATION = 'core.wsgi.application'
-
-# -------------------------------------------------
 # BASE DE DATOS
 # -------------------------------------------------
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
 if DATABASE_URL:
     DATABASES = {
@@ -149,9 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # -------------------------------------------------
 
 LANGUAGE_CODE = 'es'
-
 TIME_ZONE = 'America/Guayaquil'
-
 USE_I18N = True
 USE_TZ = True
 
@@ -160,14 +154,8 @@ USE_TZ = True
 # -------------------------------------------------
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
-
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # -------------------------------------------------
@@ -188,7 +176,11 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
+
+    SESSION_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_HTTPONLY = False
 
 # -------------------------------------------------
 # DEFAULT AUTO FIELD
