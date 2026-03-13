@@ -27,15 +27,23 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-key-change-this-in-pro
 
 DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
 
+# HOSTS PERMITIDOS
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,app.veryffai.com").split(",")
+    for host in os.getenv(
+        "ALLOWED_HOSTS",
+        "127.0.0.1,localhost,app.veryffai.com,.up.railway.app"
+    ).split(",")
     if host.strip()
 ]
 
+# CSRF TRUSTED ORIGINS
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
-    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost,http://app.veryffai.com").split(",")
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://127.0.0.1,http://localhost,https://app.veryffai.com,https://*.up.railway.app"
+    ).split(",")
     if origin.strip()
 ]
 
@@ -66,7 +74,9 @@ MIDDLEWARE = [
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -86,8 +96,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+
         'DIRS': [BASE_DIR / 'templates'],
+
         'APP_DIRS': True,
+
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -103,13 +116,10 @@ TEMPLATES = [
 # BASE DE DATOS
 # -------------------------------------------------
 
-# -------------------------------------------------
-# BASE DE DATOS
-# -------------------------------------------------
-
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
 if DEBUG:
+
     if DATABASE_URL:
         DATABASES = {
             "default": dj_database_url.parse(
@@ -118,6 +128,7 @@ if DEBUG:
                 ssl_require=True
             )
         }
+
     else:
         DATABASES = {
             'default': {
@@ -125,9 +136,12 @@ if DEBUG:
                 'NAME': BASE_DIR / 'db.sqlite3',
             }
         }
+
 else:
+
     if not DATABASE_URL:
         raise Exception("DATABASE_URL no está configurada en producción.")
+
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -135,6 +149,7 @@ else:
             ssl_require=True
         )
     }
+
 # -------------------------------------------------
 # VALIDADORES DE CONTRASEÑA
 # -------------------------------------------------
@@ -159,8 +174,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # -------------------------------------------------
 
 LANGUAGE_CODE = 'es'
+
 TIME_ZONE = 'America/Guayaquil'
+
 USE_I18N = True
+
 USE_TZ = True
 
 # -------------------------------------------------
@@ -168,8 +186,11 @@ USE_TZ = True
 # -------------------------------------------------
 
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # -------------------------------------------------
@@ -177,6 +198,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # -------------------------------------------------
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # -------------------------------------------------
@@ -186,11 +208,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 if not DEBUG:
+
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
     SECURE_SSL_REDIRECT = True
+
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
+
     X_FRAME_OPTIONS = 'DENY'
 
     SESSION_COOKIE_HTTPONLY = True
