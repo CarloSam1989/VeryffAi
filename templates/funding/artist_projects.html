@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/funding.css' %}">
+
+<div class="container py-4 funding-page">
+    <div class="funding-shell">
+        <div class="funding-shell-top">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                <div>
+                    <h1 class="fw-bold mb-2">Mis proyectos de fan funding</h1>
+                    <p class="funding-subtitle">Campañas demo creadas a partir de tus canciones.</p>
+                </div>
+                <a href="{% url 'dashboard' %}" class="funding-btn-secondary">
+                    Volver al dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="p-4 p-lg-5">
+            {% if projects %}
+                <div class="row g-4">
+                    {% for project in projects %}
+                        <div class="col-lg-6">
+                            <div class="funding-card p-4">
+                                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1">{{ project.name }}</h4>
+                                        <p class="funding-muted mb-0">{{ project.song.title }}</p>
+                                    </div>
+                                    <span class="funding-badge">{{ project.get_status_display }}</span>
+                                </div>
+
+                                {% if project.description %}
+                                    <p class="funding-muted">{{ project.description|truncatechars:160 }}</p>
+                                {% else %}
+                                    <p class="funding-muted">Sin descripción adicional.</p>
+                                {% endif %}
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-6">
+                                        <div class="funding-soft-box">
+                                            <div class="funding-muted small mb-1">Vendidas</div>
+                                            <div class="fw-bold fs-4 text-white">{{ project.sold_participations }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="funding-soft-box">
+                                            <div class="funding-muted small mb-1">Disponibles</div>
+                                            <div class="fw-bold fs-4 text-white">{{ project.participations_available }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="fw-semibold text-white">Avance</span>
+                                        <span class="funding-muted">{{ project.sold_percent|floatformat:2 }}%</span>
+                                    </div>
+                                    <div class="funding-progress">
+                                        <div
+                                            class="funding-progress-bar"
+                                            style="width: {{ project.sold_percent|floatformat:2 }}%;"
+                                        ></div>
+                                    </div>
+                                </div>
+
+                                <div class="funding-muted small mb-4">
+                                    Creado: {{ project.created_at|date:"d/m/Y H:i" }}
+                                </div>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="{% url 'funding_project_detail' project.id %}" class="funding-btn-primary">
+                                        Ver detalle
+                                    </a>
+                                    <a href="{% url 'song_detail' project.song.id %}" class="funding-btn-secondary">
+                                        Ver canción
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="funding-empty-box">
+                    <h4 class="fw-bold mb-2 text-white">Aún no tienes proyectos demo</h4>
+                    <p class="funding-muted mb-0">
+                        Cuando publiques una canción podrás crear una campaña de fan funding demo.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

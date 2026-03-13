@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mis Favoritos{% endblock %}
+
+{% block content %}
+<div class="card-style mx-auto" style="max-width:800px;">
+  <h2 class="logo-text text-center mb-4">Mis Canciones Favoritas</h2>
+  {% if favorites %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Artista</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for song in favorites %}
+            <tr>
+              <td>{{ song.title }}</td>
+              <td>{{ song.artist.username }}</td>
+              <td>
+                <a href="{% url 'remove_favorite_song' song.id %}" class="btn btn-sm btn-danger">Quitar</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-center text-muted">No tienes canciones favoritas aún.</p>
+  {% endif %}
+</div>
+{% endblock %}

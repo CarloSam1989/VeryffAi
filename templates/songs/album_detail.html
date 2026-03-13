@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Álbum: {{ album.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="card-style mx-auto p-4 shadow-lg rounded-3" style="max-width:800px; background-color: #fff;">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-primary">{{ album.title }}</h2>
+      <p class="text-muted fs-5">por <a href="{% url 'artist_detail' album.artist.artist_profile.id %}" class="text-decoration-none text-info">{{ album.artist.get_full_name|default:album.artist.username }}</a></p>
+      <p class="text-muted small">Lanzado el {{ album.release_date|date:"d M, Y" }}</p>
+    </div>
+
+    <hr class="my-4">
+
+    <h3 class="mb-3 fw-bold text-secondary">Canciones del Álbum ({{ album.songs.count }})</h3>
+    {% if songs_in_album %} {# Usamos 'songs_in_album' si lo pasaste en el contexto, o directamente 'album.songs.all()' #}
+      <div class="list-group shadow-sm">
+        {% for song in songs_in_album %}
+          <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-music-note-beamed fs-4 me-3 text-muted"></i>
+                <h5 class="mb-0 fw-normal">
+                  <a href="{% url 'song_detail' song.id %}" class="text-decoration-none text-dark stretched-link">{{ song.title }}</a>
+                </h5>
+            </div>
+            <div class="d-flex flex-wrap justify-content-end align-items-center gap-1">
+                {% for genre in song.genre.all %}
+                    <span class="badge bg-secondary text-white rounded-pill">{{ genre.name }}</span>
+                {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info text-center">Este álbum aún no tiene canciones.</div>
+    {% endif %}
+
+    {# Puedes agregar más detalles del álbum aquí, como géneros del álbum #}
+    {% if album.genre.exists %}
+        <h4 class="mt-4 mb-2 fw-bold text-secondary">Géneros del Álbum:</h4>
+        <div class="d-flex flex-wrap gap-2">
+            {% for genre in album.genre.all %}
+                <span class="badge bg-dark fs-6">{{ genre.name }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-5">
+      <a href="{% url 'artist_detail' album.artist.artist_profile.id %}" class="btn btn-outline-secondary">Volver al Perfil del Artista</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

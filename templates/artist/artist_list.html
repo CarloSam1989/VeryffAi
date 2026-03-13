@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Artistas{% endblock %}
+
+{% block content %}
+<div class="card-style mx-auto" style="max-width:800px;">
+  <h2 class="logo-text text-center mb-4">Artistas</h2>
+  {% if artists %}
+    <div class="row">
+      {% for artist in artists %}
+        <div class="col-md-6 col-12 mb-3">
+          <div class="card">
+            {% if artist.avatar %}
+              <img src="{{ artist.avatar.url }}" class="card-img-top" alt="Avatar" style="height:180px; object-fit:cover;">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ artist.user.get_full_name|default:artist.user.username }}</h5>
+              <p class="card-text">{{ artist.bio|truncatechars:100 }}</p>
+              <a href="{% url 'artist_detail' artist.id %}" class="btn btn-primary-custom">Ver Perfil</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center text-muted">No hay artistas registrados.</p>
+  {% endif %}
+</div>
+{% endblock %}

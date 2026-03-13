@@ -1,0 +1,388 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}VeryfAI{% endblock %}</title>
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}?v=3">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+    <link rel="shortcut icon" href="{% static 'icons/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'icons/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/veryfai-ui.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'css/funding.css' %}?v=1">
+    <style>
+        .vf-navbar-avatar{
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,.8);
+        }
+
+        .vf-navbar-initial{
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .85rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border: 2px solid rgba(255,255,255,.8);
+        }
+
+        .dropdown-menu-dark-custom{
+            background: #171717;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .dropdown-menu-dark-custom .dropdown-item{
+            color: #fff;
+        }
+
+        .dropdown-menu-dark-custom .dropdown-item:hover{
+            background: rgba(255,255,255,.06);
+            color: #fff;
+        }
+
+        .dropdown-menu-dark-custom .dropdown-divider{
+            border-color: rgba(255,255,255,.08);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center" href="{% if is_artist_user %}{% url 'artist_profile' %}{% else %}{% url 'dashboard' %}{% endif %}">
+            <i class="bi bi-headphones me-2"></i> VeryffAI
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                {% if is_fan_user %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">Inicio Fan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'fan_favorites' %}">Mis Favoritos</a>
+                </li>
+                {% endif %}
+
+                {% if is_artist_user %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'artist_profile' %}">Panel Artista</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create_album' %}">Crear Álbum</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_song' %}">Subir Canción</a>
+                </li>
+                {% endif %}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Fan Funding
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'funding_marketplace' %}">
+                                <i class="bi bi-grid me-2"></i>Marketplace
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'funding_my_holdings' %}">
+                                <i class="bi bi-wallet2 me-2"></i>Mis participaciones
+                            </a>
+                        </li>
+
+                        {% if is_artist_user %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'funding_artist_projects' %}">
+                                <i class="bi bi-bar-chart-line me-2"></i>Mis proyectos
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </li>
+
+                {% if not is_artist_user %}
+                <li class="nav-item">
+                    <form action="{% url 'become_artist' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm spotify-btn-primary ms-lg-2 mt-2 mt-lg-0">
+                            Quiero ser artista
+                        </button>
+                    </form>
+                </li>
+                {% endif %}
+
+                <li class="nav-item dropdown ms-lg-3">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
+                       id="navbarProfile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                        {% if current_artist_profile and current_artist_profile.avatar %}
+                            <img src="{{ current_artist_profile.avatar.url }}" alt="avatar" class="vf-navbar-avatar me-2">
+                        {% elif current_fan_profile and current_fan_profile.avatar %}
+                            <img src="{{ current_fan_profile.avatar.url }}" alt="avatar" class="vf-navbar-avatar me-2">
+                        {% else %}
+                            <span class="vf-navbar-initial me-2">
+                                {{ user.username|first|upper }}
+                            </span>
+                        {% endif %}
+
+                        <span>{{ user.get_full_name|default:user.username }}</span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom" aria-labelledby="navbarProfile">
+                        {% if is_fan_user %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'fan_profile' %}">
+                                    <i class="bi bi-person me-2"></i>Mi Perfil de Fan
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if is_artist_user %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'artist_profile' %}">
+                                    <i class="bi bi-mic me-2"></i>Mi Perfil de Artista
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if is_fan_user %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'dashboard' %}">
+                                    <i class="bi bi-house me-2"></i>Dashboard Fan
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'funding_marketplace' %}">
+                                <i class="bi bi-grid me-2"></i>Marketplace Funding
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'funding_my_holdings' %}">
+                                <i class="bi bi-wallet2 me-2"></i>Mis participaciones
+                            </a>
+                        </li>
+
+                        {% if is_artist_user %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'funding_artist_projects' %}">
+                                    <i class="bi bi-bar-chart-line me-2"></i>Mis proyectos funding
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'create_album' %}">
+                                    <i class="bi bi-vinyl me-2"></i>Crear Álbum
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'upload_song' %}">
+                                    <i class="bi bi-music-note-beamed me-2"></i>Subir Canción
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'logout' %}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endif %}
+{% if messages %}
+    <style>
+        #app-toast-container{
+            position: fixed;
+            top: 88px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: min(380px, calc(100vw - 24px));
+        }
+
+        .app-toast{
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(18,18,18,.97);
+            border: 1px solid rgba(255,255,255,.08);
+            box-shadow: 0 18px 40px rgba(0,0,0,.35);
+            color: #fff;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: appToastIn .25s ease;
+        }
+
+        .app-toast-icon{
+            flex: 0 0 auto;
+            font-size: 1.35rem;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .app-toast-content{
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .app-toast-title{
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .app-toast-text{
+            color: rgba(255,255,255,.82);
+            font-size: .94rem;
+            line-height: 1.45;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .app-toast-close{
+            flex: 0 0 auto;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,.72);
+            font-size: 1.45rem;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .app-toast-close:hover{
+            color: #fff;
+        }
+
+        .app-toast-hide{
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all .25s ease;
+        }
+
+        @keyframes appToastIn{
+            from{
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to{
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px){
+            #app-toast-container{
+                top: 76px;
+                right: 12px;
+                left: 12px;
+                width: auto;
+            }
+
+            .app-toast{
+                padding: 14px 16px;
+                border-radius: 16px;
+            }
+
+            .app-toast-title{
+                font-size: .95rem;
+            }
+
+            .app-toast-text{
+                font-size: .9rem;
+            }
+        }
+    </style>
+    <div id="app-toast-container">
+        {% for message in messages %}
+            <div class="app-toast" role="alert">
+                <div class="app-toast-icon">⚠️</div>
+
+                <div class="app-toast-content">
+                    <div class="app-toast-title">Límite alcanzado</div>
+                    <div class="app-toast-text">{{ message }}</div>
+                </div>
+
+                <button type="button" class="app-toast-close" onclick="closeAppToast(this)">
+                    &times;
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        function closeAppToast(button){
+            const toast = button.closest('.app-toast');
+            if(!toast) return;
+            toast.classList.add('app-toast-hide');
+            setTimeout(function(){
+                toast.remove();
+            }, 250);
+        }
+
+        setTimeout(function(){
+            document.querySelectorAll('.app-toast').forEach(function(toast){
+                toast.classList.add('app-toast-hide');
+                setTimeout(function(){
+                    toast.remove();
+                }, 250);
+            });
+        }, 4500);
+    </script>
+{% endif %}
+<main class="site-main">
+    <div class="site-container">
+
+        {% block content %}{% endblock %}
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const players = document.querySelectorAll('.js-player');
+        players.forEach(player => {
+            new Plyr(player, {
+                controls: ['play', 'progress', 'current-time', 'mute', 'volume']
+            });
+        });
+    });
+</script>
+{% endblock %}
+</body>
+</html>

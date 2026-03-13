@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Wallet y KYC{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/funding.css' %}">
+
+<div class="container py-4 funding-page">
+    <div class="funding-shell">
+        <div class="funding-shell-top">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                <div>
+                    <h1 class="fw-bold mb-2">Wallet y KYC</h1>
+                    <p class="funding-subtitle">
+                        Administra tu wallet IOTA y tus datos de validación.
+                    </p>
+                </div>
+                <a href="{% url 'funding_my_holdings' %}" class="funding-btn-secondary">
+                    Volver
+                </a>
+            </div>
+        </div>
+
+        <div class="p-4 p-lg-5">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="funding-card p-4 h-100">
+                            <h3 class="fw-bold mb-4">Wallet</h3>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-white">Address</label>
+                                {{ wallet_form.address }}
+                                {% if wallet_form.address.errors %}
+                                    <div class="text-danger small mt-2">{{ wallet_form.address.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-white">Red</label>
+                                {{ wallet_form.network }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-white">Etiqueta</label>
+                                {{ wallet_form.wallet_label }}
+                            </div>
+
+                            <hr style="border-color: rgba(255,255,255,.08);">
+
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="funding-soft-box h-100">
+                                        <div class="funding-label mb-2">Estado address</div>
+                                        <div class="funding-value">{{ wallet.get_address_status_display }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="funding-soft-box h-100">
+                                        <div class="funding-label mb-2">Balance demo</div>
+                                        <div class="funding-value">{{ wallet.demo_balance }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="funding-card p-4 h-100">
+                            <h3 class="fw-bold mb-4">KYC</h3>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-white">Nivel</label>
+                                {{ kyc_form.verification_level }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-white">País</label>
+                                {{ kyc_form.country_code }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-white">País del documento</label>
+                                {{ kyc_form.document_country }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-white">Tipo de documento</label>
+                                {{ kyc_form.document_type }}
+                            </div>
+
+                            <div class="form-check mb-4">
+                                {{ kyc_form.consent_accepted }}
+                                <label class="form-check-label text-white ms-2">
+                                    Acepto el tratamiento de datos para validación KYC
+                                </label>
+                            </div>
+
+                            <hr style="border-color: rgba(255,255,255,.08);">
+
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="funding-soft-box h-100">
+                                        <div class="funding-label mb-2">Estado KYC</div>
+                                        <div class="funding-value">{{ kyc.get_status_display }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="funding-soft-box h-100">
+                                        <div class="funding-label mb-2">Riesgo</div>
+                                        <div class="funding-value">{{ kyc.risk_score }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn funding-btn-primary">
+                        Guardar cambios
+                    </button>
+                    <a href="{% url 'funding_my_holdings' %}" class="funding-btn-secondary">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

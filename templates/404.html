@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}404 - Página no encontrada{% endblock %}
+{% block content %}
+<div class="card-style text-center">
+  <div class="logo-text">Error 404 🚫</div>
+  <p class="text-muted">La página que buscas no existe o fue movida.</p>
+  <a href="{% url 'dashboard' %}" class="btn btn-primary-custom mt-3">Volver al Dashboard</a>
+</div>
+{% endblock %}

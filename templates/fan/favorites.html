@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mis Favoritos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-3 px-md-4">
+  <div class="spotify-shell p-4">
+
+    <div class="spotify-hero mb-4">
+      <div>
+        <p class="spotify-overline mb-2">Tu biblioteca</p>
+        <h1 class="spotify-title mb-2">Mis Favoritos</h1>
+        <p class="spotify-subtitle mb-0">
+          Aquí están las canciones que has marcado como favoritas.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-block mb-4">
+      {% if favorite_songs %}
+        <div class="spotify-list">
+          {% for fav in favorite_songs %}
+            <div class="spotify-row">
+              <div class="spotify-row-left">
+                <div class="row-index">{{ forloop.counter }}</div>
+                <div class="mini-cover">♪</div>
+
+                <div class="overflow-hidden">
+                  <div class="row-title text-truncate">{{ fav.song.title }}</div>
+                  <div class="row-meta text-truncate">
+                    {{ fav.song.artist.get_full_name|default:fav.song.artist.username }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                {% if fav.song.genre.all %}
+                  <div class="d-none d-md-flex gap-2">
+                    {% for g in fav.song.genre.all|slice:":2" %}
+                      <span class="genre-pill">{{ g.name }}</span>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                <a href="{% url 'song_detail' fav.song.id %}" class="btn spotify-btn-primary btn-sm">
+                  Escuchar
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-block">
+          <h4 class="mb-2">Aún no tienes favoritos</h4>
+          <p class="mb-0 text-white-50">
+            Explora canciones y guarda aquí las que más te gusten.
+          </p>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="mt-4">
+      <a href="{% url 'dashboard' %}" class="btn spotify-btn-secondary">
+        ← Volver al inicio
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

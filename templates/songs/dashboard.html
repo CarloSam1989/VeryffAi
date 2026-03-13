@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card-style dashboard-card-style">
+
+    <div class="d-flex flex-column flex-md-row align-items-center mb-4 border-bottom pb-4">
+        <div class="me-md-4 mb-3 mb-md-0">
+            {% if artist_profile and artist_profile.avatar %}
+                <img src="{{ artist_profile.avatar.url }}"
+                     alt="Avatar"
+                     class="rounded-circle shadow-sm"
+                     style="width:100px;height:100px;object-fit:cover;">
+            {% elif fan_profile and fan_profile.avatar %}
+                <img src="{{ fan_profile.avatar.url }}"
+                     alt="Avatar"
+                     class="rounded-circle shadow-sm"
+                     style="width:100px;height:100px;object-fit:cover;">
+            {% else %}
+                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-sm"
+                     style="width:100px;height:100px;">
+                    <i class="bi bi-person fs-1 text-secondary"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div class="logo-text mb-1">Dashboard</div>
+            <h2 class="fw-bold mb-1">
+                Bienvenido, {{ request.user.get_full_name|default:request.user.username }}
+            </h2>
+
+            {% if artist_profile %}
+                <p class="text-muted mb-0">Panel del artista</p>
+            {% elif fan_profile %}
+                <p class="text-muted mb-0">Panel del fan</p>
+            {% else %}
+                <p class="text-muted mb-0">Panel general</p>
+            {% endif %}
+        </div>
+
+        <div class="ms-md-auto mt-3 mt-md-0 d-flex gap-2 flex-wrap">
+            <a href="{% url 'upload_song' %}" class="btn btn-primary-custom">
+                Subir canción
+            </a>
+            <a href="{% url 'create_album' %}" class="btn btn-outline-secondary">
+                Crear álbum
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <div class="stat-number">{{ songs|length }}</div>
+                <div class="stat-label">Canciones</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <div class="stat-number">{{ albums|length }}</div>
+                <div class="stat-label">Álbumes</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <div class="stat-number">{{ playlists|length }}</div>
+                <div class="stat-label">Playlists</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <div class="stat-number">{{ favorite_songs|length }}</div>
+                <div class="stat-label">Favoritos</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <h4 class="section-title">Mis canciones</h4>
+        {% if songs %}
+            <div class="row g-4">
+                {% for song in songs %}
+                    <div class="col-md-6 col-xl-4">
+                        <div class="dashboard-item h-100">
+                            <h5 class="mb-3">{{ song.title }}</h5>
+
+                            <p class="mb-2">
+                                <strong>Estado IOTA:</strong>
+                                {% if song.iota_status == 'confirmed' %}
+                                    <span class="badge bg-success">Confirmado</span>
+                                {% elif song.iota_status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Falló</span>
+                                {% endif %}
+                            </p>
+
+                            {% if song.iota_block_id %}
+                                <p class="small text-break mb-2">
+                                    <strong>Block ID:</strong> {{ song.iota_block_id }}
+                                </p>
+                            {% endif %}
+
+                            {% if song.iota_error %}
+                                <p class="small text-danger mb-2">
+                                    <strong>Error:</strong> {{ song.iota_error }}
+                                </p>
+                            {% endif %}
+
+                            {% if song.genre.all %}
+                                <p class="small mb-2">
+                                    <strong>Géneros:</strong>
+                                    {% for g in song.genre.all %}
+                                        {{ g.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+
+                            {% if song.file %}
+                                <div class="mb-3">
+                                    <audio controls class="js-player w-100">
+                                        <source src="{{ song.file.url }}">
+                                        Tu navegador no soporta audio.
+                                    </audio>
+                                </div>
+                            {% endif %}
+
+                            <p class="small text-muted mt-auto mb-3">
+                                Subida: {{ song.upload_date|date:"d/m/Y H:i" }}
+                            </p>
+
+                            {% if song.iota_status != 'confirmed' %}
+                                <a href="{% url 'retry_iota' song.id %}" class="btn btn-sm btn-warning">
+                                    Reintentar IOTA
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">
+                <i class="bi bi-music-note-beamed"></i>
+                <p>Aún no has subido canciones.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-5">
+        <h4 class="section-title">Mis álbumes</h4>
+        {% if albums %}
+            <div class="row g-4">
+                {% for album in albums %}
+                    <div class="col-md-6 col-xl-4">
+                        <div class="dashboard-item h-100">
+                            <h5 class="mb-3">{{ album.title }}</h5>
+
+                            <p class="mb-2">
+                                <strong>Estado IOTA:</strong>
+                                {% if album.iota_status == 'confirmed' %}
+                                    <span class="badge bg-success">Confirmado</span>
+                                {% elif album.iota_status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Falló</span>
+                                {% endif %}
+                            </p>
+
+                            {% if album.iota_block_id %}
+                                <p class="small text-break mb-2">
+                                    <strong>Block ID:</strong> {{ album.iota_block_id }}
+                                </p>
+                            {% endif %}
+
+                            {% if album.iota_error %}
+                                <p class="small text-danger mb-2">
+                                    <strong>Error:</strong> {{ album.iota_error }}
+                                </p>
+                            {% endif %}
+
+                            <p class="small mb-2">
+                                <strong>Canciones:</strong>
+                                {% for song in album.songs.all %}
+                                    {{ song.title }}{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                    Ninguna
+                                {% endfor %}
+                            </p>
+
+                            {% if album.genre.all %}
+                                <p class="small mb-2">
+                                    <strong>Géneros:</strong>
+                                    {% for g in album.genre.all %}
+                                        {{ g.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+
+                            <p class="small text-muted mt-auto mb-0">
+                                Lanzado: {{ album.release_date|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">
+                <i class="bi bi-disc"></i>
+                <p>Aún no has creado álbumes.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-5">
+        <h4 class="section-title">Mis playlists</h4>
+        {% if playlists %}
+            <div class="list-group custom-list-group">
+                {% for playlist in playlists %}
+                    <div class="list-group-item">
+                        <strong>{{ playlist.name }}</strong>
+                        <div class="small text-muted">
+                            Creada: {{ playlist.created|date:"d/m/Y H:i" }}
+                        </div>
+                        <div class="small">
+                            Canciones:
+                            {% for song in playlist.songs.all %}
+                                {{ song.title }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                Ninguna
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">
+                <i class="bi bi-music-note-list"></i>
+                <p>No tienes playlists todavía.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-2">
+        <h4 class="section-title">Mis favoritos</h4>
+        {% if favorite_songs %}
+            <div class="list-group custom-list-group">
+                {% for fav in favorite_songs %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <strong>{{ fav.song.title }}</strong>
+                            <div class="small text-muted">
+                                Agregado: {{ fav.added_at|date:"d/m/Y H:i" }}
+                            </div>
+                        </div>
+                        <span class="badge bg-secondary">{{ fav.song.artist.username }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">
+                <i class="bi bi-heart"></i>
+                <p>No tienes canciones favoritas todavía.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

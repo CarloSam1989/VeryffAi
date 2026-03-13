@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ song.title }}{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+         style="background: linear-gradient(180deg, #1f1f1f 0%, #121212 60%, #0e0e0e 100%); color: #fff;">
+
+        <div class="p-4 p-md-5">
+            <div class="row align-items-center g-4">
+
+                <div class="col-md-4">
+                    <div class="w-100 rounded-4 d-flex align-items-center justify-content-center position-relative"
+                         style="height: 320px; background: linear-gradient(135deg, #4b0082, #7c3aed, #1db954); color: white; font-size: 5rem;">
+                        🎵
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+
+                    <p class="mb-2 text-uppercase" style="letter-spacing: 2px; color: rgba(255,255,255,.65);">
+                        Canción
+                    </p>
+
+                    <h1 class="fw-bold mb-3" style="font-size: clamp(2rem, 4vw, 3.2rem);">
+                        {{ song.title }}
+                    </h1>
+
+                    <p class="mb-2" style="color: rgba(255,255,255,.85);">
+                        <strong>Artista:</strong>
+                        {{ song.artist.get_full_name|default:song.artist.username }}
+                    </p>
+
+                    <p class="mb-3" style="color: rgba(255,255,255,.65);">
+                        <strong>Subida:</strong> {{ song.upload_date|date:"d/m/Y H:i" }}
+                    </p>
+
+                    {% if song.genre.all %}
+                        <div class="mb-4">
+                            {% for g in song.genre.all %}
+                                <span class="genre-pill me-2 mb-2 d-inline-block">{{ g.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- BOTONES -->
+                    <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+
+                        {% if song.file %}
+                        <a href="#player" class="btn spotify-btn-primary px-4">
+                            Escuchar
+                        </a>
+                        {% endif %}
+
+                        <button
+                            type="button"
+                            class="btn favorite-btn {% if is_favorite %}is-favorite{% endif %}"
+                            data-song-id="{{ song.id }}"
+                            title="Agregar o quitar de favoritos"
+                        >
+                            <span class="heart-icon">{% if is_favorite %}♥{% else %}♡{% endif %}</span>
+                        </button>
+
+                        <!-- BOTÓN FAN FUNDING SOLO PARA EL ARTISTA -->
+                        {% if request.user.is_authenticated and request.user == song.artist %}
+
+                            {% if existing_funding_project %}
+                                <a href="{% url 'funding_project_detail' existing_funding_project.id %}"
+                                   class="btn spotify-btn-primary px-4">
+                                    Ver Fan Funding
+                                </a>
+                            {% else %}
+                                <a href="{% url 'funding_create_project' song.id %}"
+                                   class="btn spotify-btn-primary px-4">
+                                    Crear Fan Funding
+                                </a>
+                            {% endif %}
+
+                        {% endif %}
+
+                        <a href="{% url 'dashboard' %}" class="btn spotify-btn-secondary px-4">
+                            Volver
+                        </a>
+
+                    </div>
+
+                    {% if song.iota_status %}
+                        <div class="mb-3">
+                            <span class="status-badge
+                                {% if song.iota_status == 'confirmed' %}status-confirmed
+                                {% elif song.iota_status == 'failed' %}status-failed
+                                {% else %}status-pending{% endif %}">
+                                IOTA: {{ song.iota_status|title }}
+                            </span>
+                        </div>
+                    {% endif %}
+
+                    {% if song.iota_error %}
+                        <div class="alert mt-3 mb-0"
+                             style="background: rgba(255,193,7,.12); border: 1px solid rgba(255,193,7,.25); color: #ffe08a;">
+                            {{ song.iota_error }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        {% if song.file %}
+        <div class="px-4 px-md-5 pb-4">
+            <div id="player" class="player-box">
+                <h5 class="mb-3 fw-bold">Reproductor</h5>
+                <audio controls class="w-100">
+                    <source src="{{ song.file.url }}">
+                    Tu navegador no soporta audio.
+                </audio>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+
+            const cookie = cookies[i].trim();
+
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const favoriteBtn = document.querySelector('.favorite-btn');
+    if (!favoriteBtn) return;
+
+    const csrftoken = getCookie('csrftoken');
+
+    favoriteBtn.addEventListener('click', async function () {
+
+        const songId = this.dataset.songId;
+
+        try {
+
+            const response = await fetch(`/songs/favorite/toggle/${songId}/`, {
+
+                method: 'POST',
+
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+
+            });
+
+            const data = await response.json();
+
+            if (!data.ok) {
+                alert(data.error || 'No se pudo actualizar favoritos.');
+                return;
+            }
+
+            const icon = this.querySelector('.heart-icon');
+
+            if (data.is_favorite) {
+                this.classList.add('is-favorite');
+                icon.textContent = '♥';
+            } else {
+                this.classList.remove('is-favorite');
+                icon.textContent = '♡';
+            }
+
+        } catch (error) {
+            alert('Ocurrió un error al actualizar favoritos.');
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

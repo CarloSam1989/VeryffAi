@@ -1,0 +1,695 @@
+/* ================================
+   VERYFAI GLOBAL UI
+   Diseño global unificado
+================================ */
+
+/* ===== BASE ===== */
+.spotify-shell{
+  background: linear-gradient(180deg, #181818 0%, #121212 40%, #0b0b0b 100%);
+  border-radius: 24px;
+  color: #fff;
+  min-height: 80vh;
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+
+.section-block{
+  margin-bottom: 2rem;
+}
+
+.section-title{
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 18px;
+  letter-spacing: -.02em;
+}
+
+.text-white-soft{
+  color: rgba(255,255,255,.75);
+}
+
+/* ===== HERO ===== */
+.spotify-hero{
+  background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 55%, #a855f7 100%);
+  border-radius: 22px;
+  padding: 32px;
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.spotify-overline{
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: .8rem;
+  color: rgba(255,255,255,.82);
+  margin: 0;
+}
+
+.spotify-title{
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.spotify-subtitle{
+  color: rgba(255,255,255,.86);
+  font-size: 1rem;
+  margin: 0;
+  max-width: 700px;
+}
+
+/* ===== TOOLBAR ===== */
+.spotify-toolbar{
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.spotify-toolbar .form-label{
+  color: rgba(255,255,255,.78) !important;
+  font-weight: 600;
+}
+
+/* ===== INPUTS / FORMS ===== */
+.spotify-input,
+.spotify-textarea{
+  width: 100%;
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  border-radius: 14px !important;
+  padding: 12px 14px;
+  outline: none;
+  transition: .2s ease;
+}
+
+.spotify-input{
+  min-height: 50px;
+}
+
+.spotify-input::placeholder,
+.spotify-textarea::placeholder{
+  color: rgba(255,255,255,.55) !important;
+}
+
+.spotify-input:focus,
+.spotify-textarea:focus{
+  background: rgba(255,255,255,.08) !important;
+  color: #fff !important;
+  border-color: rgba(168,85,247,.6) !important;
+  box-shadow: 0 0 0 .18rem rgba(124,58,237,.18) !important;
+}
+
+.spotify-textarea{
+  min-height: 110px;
+  resize: vertical;
+}
+
+.spotify-label{
+  font-size: .85rem;
+  color: rgba(255,255,255,.72);
+  margin-bottom: 8px;
+  display: block;
+  font-weight: 600;
+}
+
+.form-block{
+  margin-bottom: 16px;
+}
+
+.photo-input{
+  width: 100%;
+  background: rgba(255,255,255,.05);
+  border: 1px dashed rgba(255,255,255,.15);
+  color: #fff;
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.helper-text{
+  color: rgba(255,255,255,.55);
+  font-size: .85rem;
+  margin-top: 6px;
+}
+
+/* ===== SELECTS OSCUROS ===== */
+select.spotify-input{
+  background: rgba(255,255,255,.06) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.15) !important;
+}
+
+select.spotify-input option{
+  background: #1c1c1c;
+  color: #fff;
+  padding: 6px;
+}
+
+select.spotify-input option:checked{
+  background: #7c3aed;
+  color: #fff;
+}
+
+select.spotify-input option:hover{
+  background: #5b21b6;
+  color: #fff;
+}
+
+select.spotify-input::-webkit-scrollbar{
+  width: 6px;
+  height: 6px;
+}
+
+select.spotify-input::-webkit-scrollbar-thumb{
+  background: #7c3aed;
+  border-radius: 6px;
+}
+
+select.spotify-input::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.06);
+}
+
+/* ===== BUTTONS ===== */
+.spotify-btn-primary{
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none;
+  color: #fff !important;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 10px 18px;
+  transition: all .2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.spotify-btn-primary:hover{
+  background: linear-gradient(135deg, #8b5cf6, #c084fc);
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(168,85,247,.30);
+}
+
+.spotify-btn-secondary{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+  color: #fff !important;
+  border-radius: 999px;
+  padding: 10px 18px;
+  transition: .2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.spotify-btn-secondary:hover{
+  background: rgba(255,255,255,.10);
+  color: #fff !important;
+}
+
+/* ===== QUICK CARDS ===== */
+.quick-card{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,.05);
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,.05);
+  min-height: 96px;
+}
+
+.quick-card h6{
+  color: #fff;
+  font-weight: 700;
+  margin: 0 0 .25rem;
+}
+
+.quick-card p{
+  color: #b3b3b3 !important;
+  margin: 0;
+}
+
+.quick-card-icon{
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.08);
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* ===== CONTENT CARDS ===== */
+.spotify-card,
+.profile-card,
+.info-card,
+.action-card,
+.player-box{
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.08);
+  color: #fff;
+}
+
+.spotify-card{
+  padding: 16px;
+  transition: transform .2s ease, background .2s ease;
+  height: 100%;
+}
+
+.spotify-card:hover{
+  transform: translateY(-4px);
+  background: #202020;
+}
+
+.profile-card,
+.info-card,
+.action-card,
+.player-box{
+  padding: 24px;
+  height: 100%;
+}
+
+.card-body-custom{
+  min-width: 0;
+}
+
+/* ===== COVER / MEDIA ===== */
+.spotify-cover{
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.spotify-cover img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.artist-cover{
+  background: transparent;
+  height: 180px;
+}
+
+.artist-cover img{
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cover-placeholder{
+  font-size: 3rem;
+  color: rgba(255,255,255,.82);
+}
+
+.cover-placeholder.rounded-circle{
+  width: 140px;
+  height: 140px;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3a2b58, #5b21b6);
+}
+
+/* ===== PROFILE ===== */
+.profile-avatar{
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(124,58,237,.35);
+  margin: 0 auto 18px;
+}
+
+.profile-avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name{
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.profile-role{
+  color: rgba(255,255,255,.70);
+  margin-bottom: 0;
+}
+
+/* ===== PLAY BUTTON ===== */
+.play-btn{
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff !important;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(168,85,247,.35);
+  transition: .2s ease;
+}
+
+.play-btn:hover{
+  color: #fff !important;
+  transform: scale(1.06);
+}
+
+/* ===== TEXT ===== */
+.song-title,
+.row-title{
+  font-weight: 700;
+  color: #fff;
+}
+
+.song-meta,
+.row-meta{
+  color: #b3b3b3;
+  font-size: .92rem;
+}
+
+/* ===== TAGS / PILLS ===== */
+.genre-pill{
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: .8rem;
+}
+
+/* ===== FAVORITES ===== */
+.favorite-btn{
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.18);
+  background: transparent;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  transition: all .2s ease;
+  flex-shrink: 0;
+}
+
+.favorite-btn:hover{
+  background: rgba(255,255,255,.08);
+  transform: scale(1.05);
+}
+
+.favorite-btn.is-favorite{
+  background: rgba(124,58,237,.18);
+  border-color: #7c3aed;
+  color: #c4b5fd;
+}
+
+.heart-icon{
+  line-height: 1;
+}
+
+/* ===== LISTS ===== */
+.spotify-list{
+  background: rgba(255,255,255,.03);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.05);
+}
+
+.spotify-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.spotify-row:last-child{
+  border-bottom: none;
+}
+
+.spotify-row:hover{
+  background: rgba(255,255,255,.05);
+}
+
+.spotify-row-left{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.row-index{
+  width: 22px;
+  text-align: center;
+  color: #b3b3b3;
+  font-weight: 600;
+}
+
+.mini-cover{
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: #2d2d2d;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.see-all-link{
+  color: #a78bfa;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.see-all-link:hover{
+  color: #c4b5fd;
+}
+
+/* ===== EMPTY STATES ===== */
+.empty-block{
+  background: rgba(255,255,255,.04);
+  border: 1px dashed rgba(255,255,255,.12);
+  border-radius: 18px;
+  padding: 24px;
+  color: #b3b3b3;
+  text-align: center;
+}
+
+/* ===== CTA ===== */
+.become-artist-box{
+  background: linear-gradient(135deg, rgba(75,0,130,.55), rgba(124,58,237,.30));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 24px;
+  padding: 40px 24px;
+  color: #fff;
+}
+
+.become-artist-box h3{
+  color: #fff;
+  font-weight: 800;
+}
+
+.become-artist-box p{
+  color: rgba(255,255,255,.78) !important;
+}
+
+/* ===== STATUS ===== */
+.status-badge{
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.status-confirmed{
+  background: rgba(25,135,84,.18);
+  color: #75d79c;
+  border: 1px solid rgba(25,135,84,.35);
+}
+
+.status-failed{
+  background: rgba(220,53,69,.18);
+  color: #ff9aa5;
+  border: 1px solid rgba(220,53,69,.35);
+}
+
+.status-pending{
+  background: rgba(255,193,7,.18);
+  color: #ffe08a;
+  border: 1px solid rgba(255,193,7,.35);
+}
+
+/* ===== STATS ===== */
+.stats-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.stat-box{
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+}
+
+.stat-number{
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.stat-label{
+  color: rgba(255,255,255,.65);
+  font-size: .92rem;
+}
+/* ---------- CLEAN TABLE FOR FUNDING ---------- */
+/* ===== FIX TABLAS BLANCAS BOOTSTRAP ===== */
+
+.funding-table-clean {
+    background: transparent !important;
+}
+
+.funding-table-clean thead,
+.funding-table-clean tbody,
+.funding-table-clean tr,
+.funding-table-clean th,
+.funding-table-clean td {
+    background: transparent !important;
+}
+
+.funding-table-clean thead th {
+    color: rgba(255,255,255,.85) !important;
+    border-bottom: 1px solid rgba(255,255,255,.12) !important;
+}
+
+.funding-table-clean tbody td {
+    color: rgba(255,255,255,.78) !important;
+    border-bottom: 1px solid rgba(255,255,255,.06) !important;
+}
+
+.funding-table-clean tbody tr:hover {
+    background: rgba(255,255,255,.03) !important;
+}
+.funding-table-clean {
+    --bs-table-bg: transparent;
+    --bs-table-color: rgba(255,255,255,.82);
+    --bs-table-border-color: rgba(255,255,255,.08);
+    --bs-table-striped-bg: rgba(255,255,255,.02);
+    --bs-table-striped-color: rgba(255,255,255,.82);
+    --bs-table-hover-bg: rgba(255,255,255,.03);
+    --bs-table-hover-color: #fff;
+    background: transparent !important;
+}
+
+.funding-table-clean thead th {
+    background: transparent !important;
+    color: rgba(255,255,255,.88) !important;
+    font-weight: 700;
+    font-size: .95rem;
+    padding: 1rem .75rem;
+    border-bottom: 1px solid rgba(255,255,255,.10) !important;
+    white-space: nowrap;
+}
+
+.funding-table-clean tbody td {
+    background: transparent !important;
+    color: rgba(255,255,255,.78) !important;
+    padding: 1rem .75rem;
+    border-bottom: 1px solid rgba(255,255,255,.06) !important;
+    vertical-align: middle;
+}
+
+.funding-table-clean tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+.funding-table-clean tbody tr:hover td {
+    background: rgba(255,255,255,.025) !important;
+}
+
+.funding-btn-sm {
+    padding: .55rem 1rem;
+    font-size: .92rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.funding-card h3,
+.funding-card h4,
+.funding-card h5 {
+    color: #fff;
+}
+
+.funding-card .table-responsive {
+    border-radius: 18px;
+    overflow: hidden;
+}
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px){
+  .spotify-hero{
+    padding: 24px;
+  }
+
+  .profile-card,
+  .info-card,
+  .action-card,
+  .player-box{
+    padding: 20px;
+  }
+
+  .spotify-cover{
+    height: 190px;
+  }
+
+  .artist-cover{
+    height: 150px;
+  }
+
+  .artist-cover img,
+  .cover-placeholder.rounded-circle{
+    width: 110px;
+    height: 110px;
+  }
+
+  .spotify-row{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

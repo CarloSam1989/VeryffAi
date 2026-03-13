@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Crear Álbum{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-3 px-md-4">
+    <div class="spotify-shell p-4">
+
+        <div class="spotify-hero mb-4">
+            <p class="spotify-overline mb-2">Gestión musical</p>
+            <h1 class="spotify-title mb-2">Crear Álbum 💿</h1>
+            <p class="spotify-subtitle mb-0">
+                Agrupa tus canciones en un álbum, define su identidad y prepáralo para publicarlo.
+            </p>
+        </div>
+
+        {% if user_songs|length == 0 %}
+            <div class="empty-block text-center">
+                <h4 class="mb-3">Aún no tienes canciones subidas</h4>
+                <p class="text-white-soft mb-4">
+                    Para crear un álbum, primero necesitas registrar al menos una canción.
+                </p>
+                <a href="{% url 'upload_song' %}" class="spotify-btn-primary">
+                    Subir canción
+                </a>
+            </div>
+        {% else %}
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="row g-4">
+                    <!-- COLUMNA IZQUIERDA -->
+                    <div class="col-lg-4">
+                        <div class="profile-card">
+                            <h3 class="section-title">Información del álbum</h3>
+
+                            <div class="form-block">
+                                <label class="spotify-label">Título del álbum</label>
+                                <input
+                                    type="text"
+                                    class="spotify-input"
+                                    name="title"
+                                    placeholder="Ej. Mi Primer Álbum"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-block">
+                                <label class="spotify-label">Géneros</label>
+                                <select name="genre" class="spotify-input" multiple size="6">
+                                    {% for g in genres %}
+                                        <option style="color:white;" value="{{ g.id }}">{{ g.name }}</option>
+                                    {% endfor %}
+                                </select>
+                               
+                                <div class="helper-text">
+                                    Puedes seleccionar uno o varios géneros.
+                                </div>
+                                 <div class="mt-2">
+                                    <button type="button" class="spotify-btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addGenreModal">
+                                        + Agregar género
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 d-grid gap-2">
+                                <button type="submit" class="spotify-btn-primary">
+                                    Crear álbum
+                                </button>
+                                <a href="{% url 'artist_profile' %}" class="spotify-btn-secondary text-center">
+                                    Volver al panel
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA DERECHA -->
+                    <div class="col-lg-8">
+                        <div class="info-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="section-title mb-0">Selecciona canciones</h3>
+                                <span class="text-white-soft small">
+                                    Usa Ctrl o Shift para seleccionar varias
+                                </span>
+                            </div>
+
+                            <div class="form-block mb-0">
+                                <select name="songs" id="songs" class="spotify-input w-100" multiple size="14">
+                                    {% for song in user_songs %}
+                                        <option style="color:white;" value="{{ song.id }}">
+                                            {{ song.title }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="helper-text mt-3">
+                                Las canciones seleccionadas formarán parte del álbum y se usarán para su registro.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+
+    </div>
+</div>
+<div class="modal fade" id="addGenreModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white border-0">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo género</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="text" id="newGenreName" class="spotify-input w-100" placeholder="Nombre del género">
+      </div>
+
+      <div class="modal-footer">
+        <button class="spotify-btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+        </button>
+        <button class="spotify-btn-primary" onclick="createGenre()">
+            Guardar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+
+function createGenre() {
+
+    const name = document.getElementById("newGenreName").value;
+
+    fetch("{% url 'create_genre' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            name: name
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            const select = document.querySelector('select[name="genre"]');
+
+            const option = document.createElement("option");
+            option.value = data.id;
+            option.text = data.name;
+            option.selected = true;
+
+            select.appendChild(option);
+
+            bootstrap.Modal.getInstance(
+                document.getElementById('addGenreModal')
+            ).hide();
+        }
+    });
+}
+
+</script>
+{% endblock %}

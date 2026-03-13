@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Mis Favoritos{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Mis Favoritos</h2>
+
+    {% if favorite_songs %}
+        <div class="row g-3">
+            {% for fav in favorite_songs %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm border-0 rounded-4 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ fav.song.title }}</h5>
+                            <p class="card-text text-muted mb-1">
+                                Artista: {{ fav.song.artist.username }}
+                            </p>
+                            <p class="card-text">
+                                Agregado: {{ fav.added_at|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info rounded-4">
+            Aún no tienes canciones favoritas.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

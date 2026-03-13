@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inicio - Fan{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-3 px-md-4">
+  <div class="spotify-shell p-4">
+
+    <!-- HERO -->
+    <div class="spotify-hero mb-4">
+      <div>
+        <p class="spotify-overline mb-2">Bienvenido</p>
+        <h1 class="spotify-title mb-2">
+          Hola, {{ user.get_full_name|default:user.username }}
+        </h1>
+        <p class="spotify-subtitle mb-0">
+          Descubre música, artistas y guarda tus canciones favoritas.
+        </p>
+      </div>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="spotify-toolbar mb-4">
+      <form method="get" class="row g-3 align-items-end w-100">
+        <div class="col-lg-5">
+          <label class="form-label text-white-50">Buscar</label>
+          <input
+            type="text"
+            name="query"
+            class="form-control spotify-input"
+            placeholder="Buscar artista, canción..."
+            value="{{ search_query }}"
+          >
+        </div>
+
+        <div class="col-lg-4">
+          <label class="form-label text-white-50">Género</label>
+          <select name="genre" class="form-select spotify-input">
+            <option value="">Todos los géneros</option>
+            {% for g in genero %}
+              <option value="{{ g.id }}" {% if selected_genre_id == g.id %}selected{% endif %}>
+                {{ g.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-lg-3 d-grid d-md-flex gap-2">
+          <button type="submit" class="btn spotify-btn-primary flex-grow-1">Buscar</button>
+          {% if searching %}
+            <a href="{% url 'dashboard' %}" class="btn spotify-btn-secondary">Limpiar</a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+
+    <!-- ACCESOS RAPIDOS -->
+    <div class="row g-3 mb-5">
+      <div class="col-md-4">
+        <div class="quick-card">
+          <div class="quick-card-icon">🎵</div>
+          <div>
+            <h6 class="mb-1">Tus favoritos</h6>
+            <p class="mb-0 text-white-50">Reproduce lo que más te gusta</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="quick-card">
+          <div class="quick-card-icon">🎤</div>
+          <div>
+            <h6 class="mb-1">Artistas</h6>
+            <p class="mb-0 text-white-50">Explora perfiles y música</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="quick-card">
+          <div class="quick-card-icon">💿</div>
+          <div>
+            <h6 class="mb-1">Nuevos lanzamientos</h6>
+            <p class="mb-0 text-white-50">Encuentra lo más reciente</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTISTAS -->
+    <div class="section-block mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="section-title mb-0">Artistas destacados</h3>
+      </div>
+
+      {% if artists %}
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
+          {% for artist in artists %}
+            <div class="col">
+              <div class="spotify-card artist-card h-100">
+                <div class="spotify-cover artist-cover">
+                  {% if artist.avatar %}
+                    <img src="{{ artist.avatar.url }}" alt="{{ artist.user.username }}">
+                  {% else %}
+                    <div class="cover-placeholder rounded-circle">🎤</div>
+                  {% endif %}
+                </div>
+
+                <div class="card-body-custom">
+                  <h6 class="song-title text-truncate mb-1">
+                    {{ artist.user.get_full_name|default:artist.user.username }}
+                  </h6>
+                  <p class="song-meta mb-3">Artista</p>
+                  <a href="{% url 'artist_detail' artist.id %}" class="btn spotify-btn-secondary w-100">
+                    Ver perfil
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-block">No hay artistas para mostrar.</div>
+      {% endif %}
+    </div>
+
+    <!-- CANCIONES -->
+    <div class="section-block mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="section-title mb-0">
+          {% if searching %}Canciones encontradas{% else %}Canciones para ti{% endif %}
+        </h3>
+      </div>
+
+      {% if songs %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+          {% for song in songs %}
+            <div class="col">
+              <div class="spotify-card song-card h-100">
+                <div class="spotify-cover">
+                  <div class="cover-placeholder">🎵</div>
+                  <a href="{% url 'song_detail' song.id %}" class="play-btn">▶</a>
+                </div>
+
+                <div class="card-body-custom">
+                  <h5 class="song-title text-truncate">{{ song.title }}</h5>
+                  <p class="song-meta text-truncate mb-2">
+                    {{ song.artist.get_full_name|default:song.artist.username }}
+                  </p>
+
+                  <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% for g in song.genre.all|slice:":2" %}
+                      <span class="genre-pill">{{ g.name }}</span>
+                    {% endfor %}
+                  </div>
+
+                  <div class="d-flex gap-2 align-items-center">
+                    <a href="{% url 'song_detail' song.id %}" class="btn spotify-btn-primary flex-grow-1">
+                      Escuchar
+                    </a>
+
+                    <button
+                        type="button"
+                        class="btn favorite-btn {% if song.id in favorite_song_ids %}is-favorite{% endif %}"
+                        data-song-id="{{ song.id }}"
+                        title="Agregar o quitar de favoritos"
+                    >
+                        <span class="heart-icon">
+                            {% if song.id in favorite_song_ids %}♥{% else %}♡{% endif %}
+                        </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-block">
+          No se encontraron canciones.
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- FAVORITOS -->
+    
+    <div class="section-block mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="section-title mb-0">Tus favoritos</h3>
+        <a href="{% url 'fan_favorites' %}" class="see-all-link">Ver todos</a>
+      </div>
+
+      <div id="favoritesContainer">
+        {% if favorite_songs %}
+          <div class="spotify-list">
+            {% for fav_song in favorite_songs %}
+              <div class="spotify-row">
+                <div class="spotify-row-left">
+                  <div class="row-index">{{ forloop.counter }}</div>
+                  <div class="mini-cover">♪</div>
+                  <div class="overflow-hidden">
+                    <div class="row-title text-truncate">{{ fav_song.title }}</div>
+                    <div class="row-meta text-truncate">
+                      {{ fav_song.artist.get_full_name|default:fav_song.artist.username }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                  <a href="{% url 'song_detail' fav_song.id %}" class="btn spotify-btn-primary btn-sm">
+                    Escuchar
+                  </a>
+                  <a href="{% url 'song_detail' fav_song.id %}" class="btn spotify-btn-secondary btn-sm">
+                    Abrir
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-block">
+            Todavía no tienes canciones favoritas.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- CONVERTIRSE EN ARTISTA -->
+    <div class="row justify-content-center mt-5">
+      <div class="col-lg-8">
+        <div class="become-artist-box text-center">
+          <h3 class="mb-3">¿Eres músico? 🎸</h3>
+          <p class="mb-4 text-white-50">
+            Sube tus canciones, crea álbumes y registra tus obras.
+          </p>
+
+          <form action="{% url 'become_artist' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn spotify-btn-primary btn-lg px-5">
+              Quiero ser artista
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function renderFavorites(favorites) {
+    const container = document.getElementById('favoritesContainer');
+
+    if (!favorites || favorites.length === 0) {
+        container.innerHTML = `
+            <div class="empty-block">
+                Todavía no tienes canciones favoritas.
+            </div>
+        `;
+        return;
+    }
+
+    let html = `<div class="spotify-list">`;
+
+    favorites.forEach((song, index) => {
+        html += `
+            <div class="spotify-row">
+                <div class="spotify-row-left">
+                    <div class="row-index">${index + 1}</div>
+                    <div class="mini-cover">♪</div>
+                    <div class="overflow-hidden">
+                        <div class="row-title text-truncate">${song.title}</div>
+                        <div class="row-meta text-truncate">${song.artist}</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="${song.url}" class="btn spotify-btn-primary btn-sm">Escuchar</a>
+                    <a href="${song.url}" class="btn spotify-btn-secondary btn-sm">Abrir</a>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const csrftoken = getCookie('csrftoken');
+
+    document.querySelectorAll('.favorite-btn').forEach(button => {
+        button.addEventListener('click', async function () {
+            const songId = this.dataset.songId;
+
+            try {
+                const response = await fetch(`/songs/favorite/toggle/${songId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!data.ok) {
+                    alert(data.error || 'No se pudo actualizar favoritos.');
+                    return;
+                }
+
+                const icon = this.querySelector('.heart-icon');
+
+                if (data.is_favorite) {
+                    this.classList.add('is-favorite');
+                    icon.textContent = '♥';
+                } else {
+                    this.classList.remove('is-favorite');
+                    icon.textContent = '♡';
+                }
+
+                renderFavorites(data.favorites);
+
+            } catch (error) {
+                alert('Ocurrió un error al actualizar favoritos.');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

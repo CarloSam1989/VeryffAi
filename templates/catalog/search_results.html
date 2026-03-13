@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Fan{% endblock %}
+
+{% block content %}
+<div class="card-style mx-auto" style="max-width:800px;">
+  <h2 class="logo-text text-center mb-4">Explora Artistas</h2>
+    <div class="row">
+      <ul class="list-group">
+        {% for artist in artists %}
+          <li class="list-group-item">{{ artist.user.username }}</li>
+        {% empty %}
+          <li class="list-group-item"><p class="card-text">No hay artistas con ese criterio.</p></li>
+        {% endfor %}
+      </ul>
+      <h4>Canciones</h4>
+      <ul class="list-group">
+        {% for song in songs %}
+          <li class="list-group-item">{{ song.title }} ({{ song.artist.username }})</li>
+        {% empty %}
+          <li class="list-group-item">No hay canciones con ese criterio.</li>
+        {% endfor %}
+      </ul>
+      <h4>Álbumes</h4>
+      <ul class="list-group">
+        {% for album in albums %}
+          <li class="list-group-item">{{ album.title }} ({{ album.artist.username }})</li>
+        {% empty %}
+          <li class="list-group-item">No hay álbumes con ese criterio.</li>
+        {% endfor %}
+      </ul>
+    </div>
+</div>
+{% endblock %}

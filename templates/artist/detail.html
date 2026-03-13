@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Perfil del Artista{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-3 px-md-4">
+  <div class="spotify-shell p-4">
+
+    <div class="spotify-hero mb-4">
+      <p class="spotify-overline mb-2">Artista</p>
+      <h1 class="spotify-title mb-2">
+        {{ artist.user.get_full_name|default:artist.user.username }}
+      </h1>
+      <p class="spotify-subtitle mb-0">
+        {{ artist.bio|default:"Este artista aún no ha agregado una biografía." }}
+      </p>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-lg-4">
+        <div class="profile-card text-center">
+          <div class="profile-avatar">
+            {% if artist.avatar %}
+              <img src="{{ artist.avatar.url }}" alt="{{ artist.user.username }}">
+            {% else %}
+              {{ artist.user.username|first|upper }}
+            {% endif %}
+          </div>
+
+          <div class="profile-name">
+            {{ artist.user.get_full_name|default:artist.user.username }}
+          </div>
+
+          <p class="profile-role">Artista</p>
+
+          {% if artist.email_contact %}
+            <p class="text-white-soft mb-2">{{ artist.email_contact }}</p>
+          {% endif %}
+
+          {% if artist.phone %}
+            <p class="text-white-soft mb-0">{{ artist.phone }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="info-card">
+          <h3 class="section-title">Canciones publicadas</h3>
+
+          {% if artist_songs %}
+            <div class="spotify-list">
+              {% for song in artist_songs %}
+                <div class="spotify-row">
+                  <div class="spotify-row-left">
+                    <div class="mini-cover">♪</div>
+                    <div class="overflow-hidden">
+                      <div class="row-title text-truncate">{{ song.title }}</div>
+                      <div class="row-meta text-truncate">
+                        {% for g in song.genre.all|slice:":2" %}
+                          {{ g.name }}{% if not forloop.last %} • {% endif %}
+                        {% empty %}
+                          Sin género
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+
+                  <a href="{% url 'song_detail' song.id %}" class="btn spotify-btn-primary btn-sm">
+                    Escuchar
+                  </a>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-block">
+              Este artista todavía no tiene canciones publicadas.
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

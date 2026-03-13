@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Mis participaciones{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/funding.css' %}">
+
+<div class="container py-4 funding-page">
+    <div class="funding-shell">
+        <div class="funding-shell-top">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                <div>
+                    <h1 class="fw-bold mb-2 text-white">Mis participaciones</h1>
+                    <p class="funding-subtitle">Resumen de holdings, wallet, KYC y compras demo.</p>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'wallet_kyc_profile' %}" class="funding-btn-primary">
+                        Editar wallet y KYC
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="funding-btn-secondary">
+                        Volver al dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 p-lg-5">
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="funding-soft-box h-100">
+                        <div class="funding-label mb-2">Wallet</div>
+                        <div class="funding-value funding-break">
+                            {% if wallet.address %}
+                                {{ wallet.address }}
+                            {% else %}
+                                Sin dirección asignada
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="funding-soft-box h-100">
+                        <div class="funding-label mb-2">Red</div>
+                        <div class="funding-value">{{ wallet.get_network_display }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="funding-soft-box h-100">
+                        <div class="funding-label mb-2">Estado wallet</div>
+                        <div class="funding-value">{{ wallet.get_address_status_display }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="funding-soft-box h-100">
+                        <div class="funding-label mb-2">Balance demo</div>
+                        <div class="funding-value">{{ wallet.demo_balance }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="funding-card p-4 h-100">
+                        <h4 class="fw-bold mb-3 text-white">Estado KYC</h4>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="funding-soft-box h-100">
+                                    <div class="funding-label mb-2">Estado</div>
+                                    <div class="funding-value">
+                                        {% if kyc %}
+                                            {{ kyc.get_status_display }}
+                                        {% else %}
+                                            No iniciado
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="funding-soft-box h-100">
+                                    <div class="funding-label mb-2">Nivel</div>
+                                    <div class="funding-value">
+                                        {% if kyc and kyc.verification_level %}
+                                            {{ kyc.get_verification_level_display }}
+                                        {% else %}
+                                            Sin definir
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="funding-soft-box h-100">
+                                    <div class="funding-label mb-2">País</div>
+                                    <div class="funding-value">
+                                        {% if kyc and kyc.country_code %}
+                                            {{ kyc.country_code }}
+                                        {% else %}
+                                            Sin definir
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="funding-soft-box h-100">
+                                    <div class="funding-label mb-2">Riesgo</div>
+                                    <div class="funding-value">
+                                        {% if kyc %}
+                                            {{ kyc.risk_score }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="funding-card p-4 h-100">
+                        <h4 class="fw-bold mb-3 text-white">Acciones rápidas</h4>
+                        <p class="funding-muted mb-4">
+                            Mantén tu wallet y tu perfil KYC actualizados para futuras operaciones.
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{% url 'wallet_kyc_profile' %}" class="funding-btn-primary">
+                                Editar wallet
+                            </a>
+                            <a href="{% url 'wallet_kyc_profile' %}" class="funding-btn-secondary">
+                                Actualizar KYC
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="funding-card p-4 mb-4">
+                <h3 class="fw-bold mb-4 text-white">Holdings actuales</h3>
+
+                {% if holdings %}
+                    <div class="table-responsive funding-table-wrap">
+                        <table class="table funding-table-clean align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Proyecto</th>
+                                    <th>Canción</th>
+                                    <th>Artista</th>
+                                    <th>Balance</th>
+                                    <th>%</th>
+                                    <th class="text-end">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for holding in holdings %}
+                                    <tr>
+                                        <td class="text-white fw-semibold">{{ holding.project.name }}</td>
+                                        <td>{{ holding.project.song.title }}</td>
+                                        <td>{{ holding.project.song.artist.username }}</td>
+                                        <td class="text-white fw-semibold">{{ holding.balance }}</td>
+                                        <td>{{ holding.percentage|floatformat:2 }}%</td>
+                                        <td class="text-end">
+                                            <a href="{% url 'funding_project_detail' holding.project.id %}" class="funding-btn-primary funding-btn-sm">
+                                                Ver proyecto
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="funding-muted mb-0">Aún no tienes participaciones demo.</p>
+                {% endif %}
+            </div>
+
+            <div class="funding-card p-4">
+                <h3 class="fw-bold mb-4 text-white">Historial de compras</h3>
+
+                {% if purchases %}
+                    <div class="table-responsive funding-table-wrap">
+                        <table class="table funding-table-clean align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Proyecto</th>
+                                    <th>Cantidad</th>
+                                    <th>Fase</th>
+                                    <th>Primera compra</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for purchase in purchases %}
+                                    <tr>
+                                        <td class="text-white fw-semibold">{{ purchase.project.name }}</td>
+                                        <td>{{ purchase.quantity }}</td>
+                                        <td>{{ purchase.get_purchase_phase_display }}</td>
+                                        <td>
+                                            {% if purchase.is_first_purchase %}
+                                                <span class="funding-badge funding-badge-success">Sí</span>
+                                            {% else %}
+                                                <span class="funding-badge funding-badge-muted">No</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="funding-badge funding-badge-primary">{{ purchase.get_status_display }}</span>
+                                        </td>
+                                        <td>{{ purchase.created_at|date:"d/m/Y H:i" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="funding-muted mb-0">No hay compras registradas todavía.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

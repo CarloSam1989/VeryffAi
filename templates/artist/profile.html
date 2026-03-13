@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Mi Perfil de Artista{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-3 px-md-4">
+    <div class="spotify-shell p-4">
+
+        <div class="spotify-hero mb-4">
+            <p class="spotify-overline mb-2">Perfil de artista</p>
+            <h1 class="spotify-title mb-2">Mi Perfil de Artista</h1>
+            <p class="spotify-subtitle mb-0">
+                Personaliza tu presencia pública, agrega tus redes y prepara tu perfil para mostrar tu música.
+            </p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row g-4">
+                <!-- COLUMNA IZQUIERDA -->
+                <div class="col-lg-4">
+                    <div class="profile-card text-center">
+                        <div class="profile-avatar">
+                            {% if artist_profile.avatar %}
+                                <img src="{{ artist_profile.avatar.url }}" alt="Avatar de artista">
+                            {% else %}
+                                {{ user.username|first|upper }}
+                            {% endif %}
+                        </div>
+
+                        <div class="profile-name">
+                            {{ user.get_full_name|default:user.username }}
+                        </div>
+
+                        <p class="profile-role">Artista</p>
+
+                        <div class="form-block mt-4 text-start">
+                            <label class="spotify-label">Avatar</label>
+                            {{ form.avatar }}
+                            <div class="helper-text">
+                                Sube una imagen JPG, PNG o WEBP para tu perfil público.
+                            </div>
+                        </div>
+
+                        <div class="mt-3 d-grid gap-2">
+                            <button type="submit" class="spotify-btn-primary">
+                                Guardar cambios
+                            </button>
+                            <a href="{% url 'upload_song' %}" class="spotify-btn-secondary text-center">
+                                Subir canción
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA CENTRAL -->
+                <div class="col-lg-5">
+                    <div class="info-card">
+                        <h3 class="section-title">Información del artista</h3>
+
+                        <div class="form-block">
+                            <label class="spotify-label">Biografía</label>
+                            {{ form.bio }}
+                        </div>
+
+                        <div class="form-block">
+                            <label class="spotify-label">Correo de contacto</label>
+                            {{ form.email_contact }}
+                        </div>
+
+                        <div class="form-block mb-0">
+                            <label class="spotify-label">Teléfono</label>
+                            {{ form.phone }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA -->
+                <div class="col-lg-3">
+                    <div class="action-card">
+                        <h3 class="section-title">Redes sociales</h3>
+
+                        <div class="form-block">
+                            <label class="spotify-label">Facebook</label>
+                            {{ form.facebook }}
+                        </div>
+
+                        <div class="form-block">
+                            <label class="spotify-label">Instagram</label>
+                            {{ form.instagram }}
+                        </div>
+
+                        <div class="form-block">
+                            <label class="spotify-label">Twitter / X</label>
+                            {{ form.twitter }}
+                        </div>
+
+                        <div class="form-block">
+                            <label class="spotify-label">YouTube</label>
+                            {{ form.youtube }}
+                        </div>
+
+                        <div class="mt-4 d-grid gap-2">
+                            <a href="{% url 'create_album' %}" class="spotify-btn-secondary text-center">
+                                Crear álbum
+                            </a>
+                            <a href="{% url 'dashboard' %}" class="spotify-btn-secondary text-center">
+                                Ver modo fan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const inputs = document.querySelectorAll('input, textarea, select');
+
+    inputs.forEach(input => {
+        if (input.type === 'file') {
+            input.classList.add('photo-input');
+        } else if (input.tagName.toLowerCase() === 'textarea') {
+            input.classList.add('spotify-textarea');
+        } else {
+            input.classList.add('spotify-input');
+        }
+    });
+});
+</script>
+{% endblock %}

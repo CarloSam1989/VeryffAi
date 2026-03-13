@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Editar Perfil del Fan{% endblock %}
+
+{% block content %}
+<div class="card-style mx-auto" style="max-width:600px;">
+  <h2 class="logo-text text-center mb-4">Editar Perfil</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3 text-center">
+      <label for="id_avatar" class="form-label mb-2">Avatar</label>
+      {% if profile.avatar %}
+        <div class="mb-2">
+          <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle" style="width:120px; border:4px solid #4b0082;">
+        </div>
+      {% endif %}
+      {{ form.avatar }}
+    </div>
+    <div class="mb-3">
+      <label for="id_bio" class="form-label">Bio</label>
+      {{ form.bio }}
+    </div>
+    <div class="mb-3">
+      <label for="id_facebook" class="form-label">Facebook</label>
+      {{ form.facebook }}
+    </div>
+    <div class="mb-3">
+      <label for="id_instagram" class="form-label">Instagram</label>
+      {{ form.instagram }}
+    </div>
+    <div class="mb-3">
+      <label for="id_twitter" class="form-label">Twitter</label>
+      {{ form.twitter }}
+    </div>
+    <div class="mb-3">
+      <label for="id_youtube" class="form-label">YouTube</label>
+      {{ form.youtube }}
+    </div>
+    <div class="mb-3">
+      <label for="id_tiktok" class="form-label">TikTok</label>
+      {{ form.tiktok }}
+    </div>
+    <button type="submit" class="btn btn-primary-custom w-100 mt-3">Guardar Cambios</button>
+  </form>
+</div>
+{% endblock %}

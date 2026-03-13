@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Subir Canción - VeryfAI{% endblock %}
+{% block content %}
+<div class="card-style">
+  <div class="logo-text">Subir Canción 📤</div>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="title" class="form-label">Título de la canción</label>
+      <input type="text" name="title" id="title" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="song" class="form-label">Archivo de audio</label>
+      <input type="file" name="song" id="song" class="form-control" accept="audio/*" required>
+    </div>
+    <button type="submit" class="btn btn-primary-custom w-100">Registrar en IOTA</button>
+  </form>
+
+  {% if messages %}
+    <div class="mt-3">
+      {% for message in messages %}
+        <div class="alert alert-info p-2">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

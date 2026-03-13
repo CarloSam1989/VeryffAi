@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/funding.css' %}">
+
+<div class="container py-4 funding-page">
+    <div class="funding-shell">
+        <div class="funding-shell-top">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                <div>
+                    <h1 class="fw-bold mb-2">Crear Fan Funding Demo</h1>
+                    <p class="funding-subtitle">
+                        Proyecto de prueba sin valor monetario real para la canción
+                        <strong>{{ song.title }}</strong>.
+                    </p>
+                </div>
+                <a href="{% url 'song_detail' song.id %}" class="funding-btn-secondary">
+                    Volver
+                </a>
+            </div>
+        </div>
+
+        <div class="p-4 p-lg-5">
+            <div class="funding-alert-info mb-4">
+                <strong>Canción:</strong> {{ song.title }}<br>
+                <strong>Artista:</strong> {{ song.artist.username }}<br>
+                <strong>Modo:</strong> Demo / Testing
+            </div>
+
+            <div class="funding-card p-4 p-lg-5">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label for="name" class="funding-label">Nombre del proyecto</label>
+                        <input
+                            type="text"
+                            class="form-control funding-input"
+                            id="name"
+                            name="name"
+                            value="Fan Funding - {{ song.title }}"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="description" class="funding-label">Descripción</label>
+                        <textarea
+                            class="form-control funding-textarea"
+                            id="description"
+                            name="description"
+                            placeholder="Describe la campaña demo, objetivo, interacción de los fans o beneficios simbólicos."
+                        ></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="total_participations" class="funding-label">Total de participaciones</label>
+                        <input
+                            type="number"
+                            class="form-control funding-input"
+                            id="total_participations"
+                            name="total_participations"
+                            value="100000"
+                            min="1"
+                            required
+                        >
+                        <div class="funding-help mt-2">
+                            Recomendado para esta fase: 100000 participaciones demo.
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="funding-soft-box">
+                                <h6 class="fw-bold mb-2 text-white">Regla de primera compra</h6>
+                                <p class="mb-0 funding-help">
+                                    Ningún fan podrá comprar más del 10% en su primera compra.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="funding-soft-box">
+                                <h6 class="fw-bold mb-2 text-white">Límite de tenencia</h6>
+                                <p class="mb-0 funding-help">
+                                    Ningún fan podrá acumular más del 15% del proyecto.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="funding-alert-warning mb-4">
+                        <strong>Importante:</strong> este proyecto es solo de prueba. No representa inversión real,
+                        no genera retornos financieros y no tiene valor monetario.
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn funding-btn-primary">
+                            Crear proyecto demo
+                        </button>
+                        <a href="{% url 'song_detail' song.id %}" class="funding-btn-secondary">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

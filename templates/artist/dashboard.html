@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard - {{ profile.user.get_full_name|default:profile.user.username }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    {# Sección de Mensajes (manteniendo la misma lógica de base.html) #}
+    {% comment %}
+        Si ya tienes los mensajes mostrándose en base.html, puedes quitar este bloque.
+        Lo dejo por si solo quieres que los mensajes del dashboard se muestren aquí.
+    {% endcomment %}
+    {% if messages %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show p-3" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card-style mx-auto p-4 shadow-lg rounded-3" style="max-width:100%; background-color: #fff;">
+        {# Sección de Bienvenida y Avatar del Artista #}
+        {% if profile %}
+            <div class="d-flex flex-column flex-md-row align-items-center mb-5 p-3 border-bottom pb-4">
+                {# Avatar #}
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" 
+                         class="rounded-circle shadow-sm me-md-4 mb-3 mb-md-0" 
+                         alt="Avatar de {{ profile.user.username }}" 
+                         style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #4b0082;">
+                {% else %}
+                    <div class="rounded-circle shadow-sm me-md-4 mb-3 mb-md-0 bg-light text-muted d-flex justify-content-center align-items-center" 
+                         style="width: 100px; height: 100px; border: 4px solid #4b0082; font-size: 0.8rem;">
+                        Sin Avatar
+                    </div>
+                {% endif %}
+                
+                {# Texto de Bienvenida #}
+                <div>
+                    <h1 class="display-6 fw-bold mb-0" style="color:#4b0082;">
+                        Bienvenido, <a href="{% url 'artist_profile' %}" class="text-decoration-none text-primary-custom">{{ profile.user.get_full_name|default:profile.user.username }}</a>
+                    </h1>
+                    <p class="lead text-muted mt-1">Aquí puedes gestionar tu música y álbumes.</p>
+                </div>
+
+                {# Botones de acción rápida (Subir/Crear) #}
+                <div class="ms-md-auto d-flex flex-column flex-sm-row gap-2 mt-3 mt-md-0">
+                    <a href="{% url 'upload_song' %}" class="btn btn-primary-custom d-flex align-items-center justify-content-center">
+                        <i class="bi bi-cloud-arrow-up-fill me-2"></i> Subir Canción
+                    </a>
+                    <a href="{% url 'create_album' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">
+                        <i class="bi bi-journal-album me-2"></i> Crear Álbum
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        {# SECCIÓN MIS CANCIONES #}
+        <h3 class="fw-bold mb-4 d-flex align-items-center">
+            <i class="bi bi-music-note-beamed me-2" style="color:#4b0082;"></i> Mis Canciones
+            <small class="text-muted ms-3 fs-6">({{ songs|length }} registradas)</small>
+        </h3>
+        {% if songs %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+                {% for song in songs %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0 {% if song.iota_block_id == 'PENDIENTE' %}border-warning{% else %}border-success{% endif %}" style="border-width: 2px !important;">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-bold text-truncate mb-2" title="{{ song.title }}">
+                                    <i class="bi bi-file-earmark-music-fill me-2" style="color:#4b0082;"></i> {{ song.title }}
+                                </h5>
+                                
+                                <div class="mb-3 d-flex align-items-center">
+                                    {% if song.iota_block_id == "PENDIENTE" %}
+                                        <span class="badge bg-warning text-dark me-2">
+                                            <i class="bi bi-hourglass-split me-1"></i> Pendiente IOTA
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-success me-2">
+                                            <i class="bi bi-check-circle-fill me-1"></i> Registrado IOTA
+                                        </span>
+                                        <a href="https://explorer.shimmer.network/shimmer/block/{{ song.iota_block_id }}?tab=Metadata"
+                                           class="btn btn-sm btn-outline-info d-flex align-items-center" target="_blank">
+                                            <i class="bi bi-box-arrow-up-right me-1"></i> Ver en Explorer
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if song.file %}
+                                    <div class="audio-player-container mb-3 flex-grow-1">
+                                        <audio class="js-player" controls>
+                                            <source src="{{ song.file.url }}" type="audio/mpeg" />
+                                            Tu navegador no soporta audio.
+                                        </audio>
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted mb-3 flex-grow-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> Sin archivo de audio.</p>
+                                {% endif %}
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top">
+                                    <small class="text-muted">Subida: {{ song.upload_date|date:"d/m/Y H:i" }}</small>
+                                    {% if song.iota_block_id == "PENDIENTE" %}
+                                        <a href="{% url 'retry_iota' song.id %}" class="btn btn-sm btn-warning d-flex align-items-center">
+                                            <i class="bi bi-arrow-clockwise me-1"></i> Reintentar
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'song_detail' song.id %}" class="btn btn-sm btn-outline-primary d-flex align-items-center">
+                                            <i class="bi bi-info-circle me-1"></i> Detalles
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center py-4 mb-5" role="alert">
+                <i class="bi bi-mic-fill fs-3 mb-2 d-block"></i>
+                <p class="lead">¡Aún no has subido ninguna canción!</p>
+                <p>Anímate y comparte tu música con el mundo.</p>
+                <a href="{% url 'upload_song' %}" class="btn btn-primary-custom mt-3">
+                    <i class="bi bi-cloud-arrow-up-fill me-2"></i> Subir mi primera canción
+                </a>
+            </div>
+        {% endif %}
+
+        <hr class="my-5">
+
+        {# SECCIÓN MIS ÁLBUMES #}
+        <h3 class="fw-bold mb-4 d-flex align-items-center">
+            <i class="bi bi-collection-fill me-2" style="color:#4b0082;"></i> Mis Álbumes
+            <small class="text-muted ms-3 fs-6">({{ albums|length }} publicados)</small>
+        </h3>
+        {% if albums %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for album in albums %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0 {% if album.iota_block_id %}border-success{% else %}border-warning{% endif %}" style="border-width: 2px !important;">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-bold text-truncate mb-2" title="{{ album.title }}">
+                                    <i class="bi bi-journal-album me-2" style="color:#4b0082;"></i> <a href="{% url 'album_detail' album.id %}" class="text-decoration-none text-dark stretched-link">{{ album.title }}</a>
+                                </h5>
+
+                                <div class="mb-3 d-flex align-items-center">
+                                    {% if album.iota_block_id %}
+                                        <span class="badge bg-success me-2">
+                                            <i class="bi bi-check-circle-fill me-1"></i> Registrado IOTA
+                                        </span>
+                                        <a href="https://explorer.shimmer.network/shimmer/block/{{ album.iota_block_id }}?tab=Metadata"
+                                           class="btn btn-sm btn-outline-info d-flex align-items-center" target="_blank">
+                                            <i class="bi bi-box-arrow-up-right me-1"></i> Ver en Explorer
+                                        </a>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark me-2">
+                                            <i class="bi bi-hourglass-split me-1"></i> Pendiente IOTA
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <p class="card-text text-muted flex-grow-1">
+                                    <i class="bi bi-music-note me-1"></i> Canciones: 
+                                    {% if album.songs.all %}
+                                        {% for song in album.songs.all %}
+                                            <a href="{% url 'song_detail' song.id %}" class="text-decoration-none text-info small">{{ song.title }}</a>{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        Ninguna
+                                    {% endif %}
+                                </p>
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top">
+                                    <small class="text-muted">Lanzado: {{ album.release_date|date:"d/m/Y H:i" }}</small>
+                                    {# Agrega un botón para editar el álbum si tienes una vista de edición #}
+                                    <a href="{% url 'album_detail' album.id %}" class="btn btn-sm btn-outline-primary d-flex align-items-center">
+                                        <i class="bi bi-info-circle me-1"></i> Detalles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center py-4" role="alert">
+                <i class="bi bi-journal-album fs-3 mb-2 d-block"></i>
+                <p class="lead">¡Aún no has creado ningún álbum!</p>
+                <p>Organiza tus canciones en colecciones.</p>
+                <a href="{% url 'create_album' %}" class="btn btn-outline-primary mt-3">
+                    <i class="bi bi-journal-plus me-2"></i> Crear mi primer álbum
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

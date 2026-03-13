@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Subir Canción{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-3 px-md-4">
+    <div class="spotify-shell p-4">
+
+        <div class="spotify-hero mb-4">
+            <p class="spotify-overline mb-2">Gestión musical</p>
+            <h1 class="spotify-title mb-2">Subir Canción 🎧</h1>
+            <p class="spotify-subtitle mb-0">
+                Registra una nueva canción, agrega su género y prepárala para su registro en IOTA.
+            </p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row g-4">
+                <!-- COLUMNA IZQUIERDA -->
+                <div class="col-lg-4">
+                    <div class="profile-card">
+                        <h3 class="section-title">Archivo y acción</h3>
+
+                        <div class="form-block">
+                            <label for="song" class="spotify-label">Archivo de audio</label>
+                            <input
+                                type="file"
+                                name="song"
+                                id="song"
+                                class="photo-input"
+                                accept="audio/*"
+                                required
+                            >
+                            <div class="helper-text">
+                                Formatos aceptados según tu navegador: MP3, WAV, OGG y otros compatibles.
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-grid gap-2">
+                            <button type="submit" class="spotify-btn-primary">
+                                Registrar en IOTA
+                            </button>
+                            <a href="{% url 'artist_profile' %}" class="spotify-btn-secondary text-center">
+                                Volver al panel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA CENTRAL -->
+                <div class="col-lg-5">
+                    <div class="info-card">
+                        <h3 class="section-title">Información de la canción</h3>
+
+                        <div class="form-block">
+                            <label for="title" class="spotify-label">Título de la canción</label>
+                            <input
+                                type="text"
+                                name="title"
+                                id="title"
+                                class="spotify-input"
+                                placeholder="Ej. Mi nueva canción"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-block mb-0">
+                            <label for="genre" class="spotify-label">Géneros</label>
+                            <select name="genre" id="genre" class="spotify-input w-100" multiple size="8">
+                                {% for g in genres %}
+                                    <option style="color:white;" value="{{ g.id }}">{{ g.name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="mt-2">
+                                <button type="button"
+                                        class="spotify-btn-primary btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#addGenreModal">
+                                    + Agregar género
+                                </button>
+                            </div>
+
+                            <div class="helper-text">
+                                Puedes seleccionar uno o varios géneros para clasificar mejor tu canción.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA -->
+                <div class="col-lg-3">
+                    <div class="action-card">
+                        <h3 class="section-title">Recomendaciones</h3>
+
+                        <div class="empty-block text-start">
+                            <p class="mb-2"><strong>• Título claro:</strong> usa el nombre real de la obra.</p>
+                            <p class="mb-2"><strong>• Audio correcto:</strong> verifica que el archivo sea el definitivo.</p>
+                            <p class="mb-2"><strong>• Género:</strong> selecciona los que mejor representen tu canción.</p>
+                            <p class="mb-0"><strong>• Registro:</strong> al guardar, se intentará registrar en IOTA.</p>
+                        </div>
+
+                        <div class="mt-4 d-grid gap-2">
+                            <a href="{% url 'create_album' %}" class="spotify-btn-primary text-center">
+                                Crear álbum
+                            </a>
+                            <a href="{% url 'dashboard' %}" class="spotify-btn-secondary text-center">
+                                Ver modo fan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- MODAL NUEVO GÉNERO -->
+<div class="modal fade" id="addGenreModal" tabindex="-1" aria-labelledby="addGenreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-0" style="border-radius: 18px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="addGenreModalLabel">Nuevo género</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="newGenreName" class="spotify-input w-100" placeholder="Nombre del género">
+            </div>
+
+            <div class="modal-footer border-0">
+                <button type="button" class="spotify-btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="spotify-btn-primary" id="saveGenreBtn">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const saveGenreBtn = document.getElementById('saveGenreBtn');
+
+    saveGenreBtn.addEventListener('click', async function () {
+        const input = document.getElementById('newGenreName');
+        const genreName = input.value.trim();
+
+        if (!genreName) {
+            alert('Escribe un nombre de género.');
+            return;
+        }
+
+        try {
+            const response = await fetch("{% url 'create_genre' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                body: JSON.stringify({ name: genreName })
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                alert(data.error || 'No se pudo crear el género.');
+                return;
+            }
+
+            const select = document.getElementById('genre');
+            const option = document.createElement('option');
+            option.value = data.id;
+            option.textContent = data.name;
+            option.selected = true;
+            select.appendChild(option);
+
+            input.value = '';
+
+            const modalEl = document.getElementById('addGenreModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+
+        } catch (error) {
+            alert('Ocurrió un error al crear el género.');
+        }
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

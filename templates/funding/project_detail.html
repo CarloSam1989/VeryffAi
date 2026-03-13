@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/funding.css' %}">
+<div class="container py-4 funding-page">
+    <div class="funding-shell">
+        <div class="funding-shell-top">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                <div>
+                    <h1 class="fw-bold mb-2">{{ project.name }}</h1>
+                    <p class="funding-subtitle">
+                        Canción: <strong>{{ project.song.title }}</strong> ·
+                        Artista: <strong>{{ project.song.artist.username }}</strong>
+                    </p>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    {% if is_owner %}
+                        <a href="{% url 'funding_artist_projects' %}" class="funding-btn-secondary">
+                            Mis proyectos
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'funding_my_holdings' %}" class="funding-btn-secondary">
+                        Mis participaciones
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 p-lg-5">
+            <div class="funding-alert-warning mb-4">
+                <strong>Modo demo:</strong> estas participaciones no tienen valor económico real y solo sirven para pruebas.
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="funding-card p-4 mb-4">
+                        <h3 class="fw-bold mb-3">Resumen del proyecto</h3>
+
+                        {% if project.description %}
+                            <p class="funding-muted mb-4">{{ project.description }}</p>
+                        {% else %}
+                            <p class="funding-muted mb-4">Este proyecto no tiene descripción adicional.</p>
+                        {% endif %}
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="funding-soft-box text-center h-100">
+                                    <div class="funding-label mb-2">Total participaciones</div>
+                                    <div class="funding-value">{{ project.total_participations }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="funding-soft-box text-center h-100">
+                                    <div class="funding-label mb-2">Vendidas</div>
+                                    <div class="funding-value">{{ project.sold_participations }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="funding-soft-box text-center h-100">
+                                    <div class="funding-label mb-2">Disponibles</div>
+                                    <div class="funding-value">{{ project.participations_available }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-white">Avance</span>
+                            <span class="funding-muted">{{ project.sold_percent|floatformat:2 }}%</span>
+                        </div>
+
+                        <div class="funding-progress mb-4">
+                            <div class="funding-progress-bar"
+                                 style="width: {{ project.sold_percent|floatformat:2 }}%;"></div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="funding-soft-box h-100">
+                                    <div class="funding-label mb-2">Máximo primera compra</div>
+                                    <div class="funding-value">{{ max_primary_buy_units }}</div>
+                                    <div class="funding-muted small">participaciones</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="funding-soft-box h-100">
+                                    <div class="funding-label mb-2">Máximo por fan</div>
+                                    <div class="funding-value">{{ max_holding_units }}</div>
+                                    <div class="funding-muted small">participaciones</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if project.tokens.all %}
+                            <hr style="border-color: rgba(255,255,255,.08);" class="my-4">
+                            <h5 class="fw-bold mb-3">Token demo asociado</h5>
+                            {% for token in project.tokens.all %}
+                                <div class="funding-soft-box mb-2">
+                                    <div class="fw-semibold text-white">{{ token.name }} ({{ token.symbol }})</div>
+                                    <div class="funding-muted small">
+                                        Supply: {{ token.total_supply }} · Estado: {{ token.get_status_display }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="funding-card p-4">
+                        <h3 class="fw-bold mb-4">Compras recientes</h3>
+
+                        {% if recent_purchases %}
+                            <div class="table-responsive funding-table-wrap">
+                                <table class="table funding-table-clean align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Fan</th>
+                                            <th>Cantidad</th>
+                                            <th>Primera compra</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for purchase in recent_purchases %}
+                                            <tr>
+                                                <td class="text-white fw-semibold">{{ purchase.user.username }}</td>
+                                                <td>{{ purchase.quantity }}</td>
+                                                <td>
+                                                    {% if purchase.is_first_purchase %}
+                                                        <span class="funding-badge funding-badge-success">Sí</span>
+                                                    {% else %}
+                                                        <span class="funding-badge funding-badge-muted">No</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ purchase.created_at|date:"d/m/Y H:i" }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="funding-muted mb-0">Todavía no hay compras registradas.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="funding-card p-4 mb-4">
+                        <h3 class="fw-bold mb-3">Tu estado</h3>
+                        <a href="{% url 'wallet_kyc_profile' %}" class="funding-btn-secondary funding-btn-sm mt-3">
+                            Editar wallet y KYC
+                        </a>
+                        <div class="mb-3">
+                            <div class="funding-label">Wallet</div>
+                            <div class="fw-semibold text-white">
+                                {% if wallet.address %}
+                                    {{ wallet.address }}
+                                {% else %}
+                                    Sin dirección asignada
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="funding-label">Red</div>
+                            <div class="fw-semibold text-white">{{ wallet.get_network_display }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="funding-label">KYC</div>
+                            <div class="fw-semibold text-white">{{ wallet.get_kyc_status_display }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="funding-label">Balance demo</div>
+                            <div class="fw-semibold text-white">{{ wallet.demo_balance }}</div>
+                        </div>
+
+                        <div>
+                            <div class="funding-label">Tus participaciones</div>
+                            <div class="funding-value">
+                                {% if user_holding %}
+                                    {{ user_holding.balance }}
+                                    <span class="fs-6 funding-muted">({{ user_holding.percentage|floatformat:2 }}%)</span>
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if request.user != project.song.artist %}
+                    <div class="funding-card p-4 mb-4">
+                        <h3 class="fw-bold mb-3">Comprar participaciones demo</h3>
+
+                        <form method="post" action="{% url 'funding_buy' project.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label fw-semibold text-white">Cantidad</label>
+                                <input
+                                    type="number"
+                                    class="form-control funding-input"
+                                    id="quantity"
+                                    name="quantity"
+                                    min="1"
+                                    max="{{ project.participations_available }}"
+                                    required
+                                >
+                                <div class="form-text funding-muted">
+                                    Primera compra máxima: {{ max_primary_buy_units }} ·
+                                    Tenencia máxima: {{ max_holding_units }}
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn funding-btn-primary w-100">
+                                Comprar demo
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="funding-card p-4 mb-4">
+                        <h3 class="fw-bold mb-3">Proyecto del artista</h3>
+                        <p class="funding-muted mb-0">
+                            Como artista propietario, no puedes comprar participaciones de tu propio proyecto demo.
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <div class="funding-card p-4">
+                        <h3 class="fw-bold mb-3">Top holders</h3>
+
+                        {% if top_holders %}
+                            {% for holder in top_holders %}
+                                <div class="d-flex justify-content-between align-items-center py-3 border-bottom"
+                                     style="border-color: rgba(255,255,255,.06) !important;">
+                                    <div>
+                                        <div class="fw-semibold text-white">{{ holder.user.username }}</div>
+                                        <small class="funding-muted">{{ holder.percentage|floatformat:2 }}%</small>
+                                    </div>
+                                    <span class="funding-badge funding-badge-primary">{{ holder.balance }}</span>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="funding-muted mb-0">Aún no hay holders.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
