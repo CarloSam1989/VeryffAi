@@ -29,13 +29,13 @@ DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,app.veryfai.com").split(",")
+    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,app.veryffai.com").split(",")
     if host.strip()
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
-    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost").split(",")
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost,http://app.veryffai.com").split(",")
     if origin.strip()
 ]
 
