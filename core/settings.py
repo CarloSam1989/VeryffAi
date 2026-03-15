@@ -29,22 +29,17 @@ DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
 
 # HOSTS PERMITIDOS
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv(
-        "ALLOWED_HOSTS",
-        "127.0.0.1,localhost,app.veryffai.com,.up.railway.app"
-    ).split(",")
-    if host.strip()
+    "veryffai.com",
+    "www.veryffai.com",
+    "app.veryffai.com",
+    ".up.railway.app"
 ]
 
 # CSRF TRUSTED ORIGINS
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CSRF_TRUSTED_ORIGINS",
-        "http://127.0.0.1,http://localhost,https://app.veryffai.com,https://*.up.railway.app"
-    ).split(",")
-    if origin.strip()
+    "https://veryffai.com",
+    "https://www.veryffai.com",
+    "https://app.veryffai.com"
 ]
 
 # -------------------------------------------------
