@@ -2,7 +2,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import dj_database_url
-from . import create_superuser
+
 # -------------------------------------------------
 # CARGAR VARIABLES DE ENTORNO
 # -------------------------------------------------
