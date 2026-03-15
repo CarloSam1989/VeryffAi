@@ -29,6 +29,8 @@ DEBUG = os.getenv("DEBUG", "False").strip().lower() == "true"
 
 # HOSTS PERMITIDOS
 ALLOWED_HOSTS = [
+    "veryffai.online",
+    "www.veryffai.online",
     "veryffai.com",
     "www.veryffai.com",
     "app.veryffai.com",
@@ -37,6 +39,8 @@ ALLOWED_HOSTS = [
 
 # CSRF TRUSTED ORIGINS
 CSRF_TRUSTED_ORIGINS = [
+    "veryffai.online",
+    "www.veryffai.online",
     "https://veryffai.com",
     "https://www.veryffai.com",
     "https://app.veryffai.com"
